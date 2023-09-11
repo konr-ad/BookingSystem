@@ -28,4 +28,5 @@ public class Apartment {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private Owner owner;
+
 }
