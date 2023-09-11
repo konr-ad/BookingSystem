@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "app_User")
 abstract class User {
 
     @Id
