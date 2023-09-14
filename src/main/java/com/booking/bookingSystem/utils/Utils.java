@@ -8,11 +8,21 @@ import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.model.Owner;
 import com.booking.bookingSystem.model.Reservation;
+import com.booking.bookingSystem.repository.ApartmentRepository;
+import com.booking.bookingSystem.repository.ClientRepository;
+import com.booking.bookingSystem.repository.OwnerRepository;
+import com.booking.bookingSystem.service.OwnerService;
+import jakarta.annotation.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Resource
 public class Utils {
+
+    private OwnerRepository ownerRepository;
+    private ApartmentRepository apartmentRepository;
+    private ClientRepository clientRepository;
 
     public ReservationDto reservationToDto(Reservation reservation) {
         ReservationDto dto = new ReservationDto();
@@ -38,6 +48,44 @@ public class Utils {
             dtos.add(dto);
         }
         return dtos;
+    }
+
+    public Reservation reservationDtoToEntity(ReservationDto dto) {
+        Reservation reservation = new Reservation();
+        reservation.setId(dto.getId());
+        reservation.setStartDate(dto.getStartDate());
+        reservation.setEndDate(dto.getEndDate());
+        reservation.setCreatedDate(dto.getCreatedDate());
+
+        if (dto.getApartmentId() != null) {
+            Apartment apartment = apartmentRepository.findById(dto.getApartmentId())
+                    .orElseThrow(() -> new IllegalArgumentException("No Apartment found with ID: " + dto.getApartmentId()));
+            reservation.setApartment(apartment);
+        }
+
+        if (dto.getClientId() != null) {
+            Client client = clientRepository.findById(dto.getClientId())
+                    .orElseThrow(() -> new IllegalArgumentException("No client found with ID: " + dto.getClientId()));
+            reservation.setClient(client);
+        }
+        return reservation;
+    }
+
+    public Apartment apartmentDtoToEntity(ApartmentDto dto) {
+        Apartment apartment = new Apartment();
+        apartment.setId(dto.getId());
+        apartment.setName(dto.getName());
+        apartment.setDescription(dto.getDescription());
+        apartment.setAddress(dto.getAddress());
+        apartment.setPricePerNight(dto.getPricePerNight());
+        apartment.setNumberOfRooms(dto.getNumberOfRooms());
+        apartment.setCapacity(dto.getCapacity());
+        if(dto.getOwner() != null) {
+            Owner owner = ownerRepository.findById(dto.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("No owner with ID: " + dto.getId()));
+            apartment.setOwner(owner);
+        }
+        return apartment;
     }
 
     public OwnerDto ownerToDto(Owner owner) {
