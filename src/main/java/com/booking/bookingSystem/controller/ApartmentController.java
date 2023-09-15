@@ -4,7 +4,6 @@ import com.booking.bookingSystem.dto.ApartmentDto;
 import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.service.ApartmentService;
 import com.booking.bookingSystem.utils.Utils;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

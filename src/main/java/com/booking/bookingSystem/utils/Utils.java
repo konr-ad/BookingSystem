@@ -11,7 +11,6 @@ import com.booking.bookingSystem.model.Reservation;
 import com.booking.bookingSystem.repository.ApartmentRepository;
 import com.booking.bookingSystem.repository.ClientRepository;
 import com.booking.bookingSystem.repository.OwnerRepository;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
