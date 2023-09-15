@@ -19,5 +19,5 @@ public class ClientDto {
     private String phoneNumber;
     private LocalDate dateOfBirth;
     private LocalDate registeredDate;
-    private List<ReservationDto> pastReservations;
+    //private List<ReservationDto> pastReservations;
 }

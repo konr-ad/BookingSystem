@@ -15,15 +15,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/apartments")
 public class ApartmentController {
+    private final Utils utils;
 
-    @Resource
-    Utils utils;
-
-    private ApartmentService apartmentService;
+    private final ApartmentService apartmentService;
 
     @Autowired
-    public ApartmentController(ApartmentService apartmentService) {
+    public ApartmentController(ApartmentService apartmentService, Utils utils) {
         this.apartmentService = apartmentService;
+        this.utils = utils;
     }
 
     @GetMapping("/{id}")

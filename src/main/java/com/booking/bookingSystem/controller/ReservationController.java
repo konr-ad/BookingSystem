@@ -17,13 +17,13 @@ import java.util.Optional;
 @RequestMapping("/api/reservations")
 public class ReservationController {
 
-    @Resource
-    private Utils utils;
+    private final Utils utils;
     private final ReservationService reservationService;
 
     @Autowired
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(ReservationService reservationService, Utils utils) {
         this.reservationService = reservationService;
+        this.utils = utils;
     }
 
     @GetMapping("/{id}")
