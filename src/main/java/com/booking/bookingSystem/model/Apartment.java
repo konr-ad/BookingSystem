@@ -23,6 +23,7 @@ public class Apartment {
     private BigDecimal pricePerNight;
     private int numberOfRooms;
     private int capacity;
+    private String location;
 //    private List<String> amenities;
     @ManyToOne
     @JoinColumn(name = "owner_id")

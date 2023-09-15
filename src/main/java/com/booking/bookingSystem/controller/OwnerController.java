@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/owners")
+@RequestMapping("api/owners")
 public class OwnerController {
 
     private final Utils utils;

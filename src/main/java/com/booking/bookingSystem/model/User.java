@@ -17,7 +17,7 @@ abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NonNull
+    @Column(name = "firstName", nullable = false)
     private String firstName;
     @NonNull
     private String lastName;
@@ -27,7 +27,7 @@ abstract class User {
     private String phoneNumber;
     //private String password;
 
-    @Column(nullable = true)
+    @Column(name = "dateofbirth", nullable = true)
     private LocalDate dateofBirth;
 
     private LocalDate registeredDate;
