@@ -19,4 +19,5 @@ public class ApartmentDto {
     private int numberOfRooms;
     private int capacity;
     private OwnerDto owner;
+    private String location;
 }

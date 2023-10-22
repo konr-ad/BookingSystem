@@ -24,7 +24,7 @@ public class ApartmentService {
         return apartmentRepository.findById(id);
     }
 
-    public List<Apartment> findbyLocation(String location) {
+    public Optional<Apartment> findbyLocation(String location) {
         return apartmentRepository.findByLocation(location);
     }
 
@@ -46,5 +46,9 @@ public class ApartmentService {
 
     public void deleteById(Long id) {
         apartmentRepository.deleteById(id);
+    }
+
+    public Optional<Apartment> findbyName(String name) {
+        return apartmentRepository.findByName(name);
     }
 }

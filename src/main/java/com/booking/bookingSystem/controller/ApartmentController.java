@@ -15,7 +15,6 @@ import java.util.Optional;
 @RequestMapping("api/apartments")
 public class ApartmentController {
     private final Utils utils;
-
     private final ApartmentService apartmentService;
 
     @Autowired
@@ -27,6 +26,26 @@ public class ApartmentController {
     @GetMapping("/{id}")
     public ResponseEntity<ApartmentDto> getApartment(@PathVariable Long id) {
         Optional<Apartment> apartment = apartmentService.findById(id);
+        if (apartment.isPresent()) {
+            ApartmentDto dto = utils.apartmentToDto(apartment.get());
+            return ResponseEntity.ok(dto);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/byname/{name}")
+    public ResponseEntity<ApartmentDto> getApartmentByName(@PathVariable String name) {
+        Optional<Apartment> apartment = apartmentService.findbyName(name);
+        if (apartment.isPresent()) {
+            ApartmentDto dto = utils.apartmentToDto(apartment.get());
+            return ResponseEntity.ok(dto);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/bylocation/{location}")
+    public ResponseEntity<ApartmentDto> getApartmentByLocation(@PathVariable String location) {
+        Optional<Apartment> apartment = apartmentService.findbyLocation(location);
         if (apartment.isPresent()) {
             ApartmentDto dto = utils.apartmentToDto(apartment.get());
             return ResponseEntity.ok(dto);

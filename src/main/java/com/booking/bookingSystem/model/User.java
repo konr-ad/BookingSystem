@@ -4,15 +4,17 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "app_User")
-abstract class User {
+public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

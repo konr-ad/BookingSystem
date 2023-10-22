@@ -95,6 +95,7 @@ public class Utils {
         apartment.setPricePerNight(dto.getPricePerNight());
         apartment.setNumberOfRooms(dto.getNumberOfRooms());
         apartment.setCapacity(dto.getCapacity());
+        apartment.setLocation(dto.getLocation());
         if (dto.getOwner() != null) {
             Owner owner = ownerRepository.findById(dto.getId())
                     .orElseThrow(() -> new IllegalArgumentException("No owner with ID: " + dto.getId()));
@@ -126,6 +127,7 @@ public class Utils {
         dto.setNumberOfRooms(apartment.getNumberOfRooms());
         dto.setCapacity(apartment.getCapacity());
         dto.setOwner(ownerToDto(apartment.getOwner()));
+        dto.setLocation(apartment.getLocation());
         return dto;
     }
 
