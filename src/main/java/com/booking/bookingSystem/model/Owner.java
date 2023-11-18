@@ -17,7 +17,6 @@ import java.util.List;
 @Table(name = "owner")
 public class Owner extends User {
 
-    @OneToMany
-    @JoinColumn(name = "apartment_id")
+    @OneToMany(mappedBy = "owner")
     private List<Apartment> ownedApartments = new ArrayList<>();
 }
