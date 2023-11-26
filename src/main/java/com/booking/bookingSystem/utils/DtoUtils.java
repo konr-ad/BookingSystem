@@ -18,14 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class Utils {
+public class DtoUtils {
 
     private final OwnerRepository ownerRepository;
     private final ApartmentRepository apartmentRepository;
     private final ClientRepository clientRepository;
 
     @Autowired
-    public Utils(OwnerRepository ownerRepository, ApartmentRepository apartmentRepository, ClientRepository clientRepository) {
+    public DtoUtils(OwnerRepository ownerRepository, ApartmentRepository apartmentRepository, ClientRepository clientRepository) {
         this.ownerRepository = ownerRepository;
         this.apartmentRepository = apartmentRepository;
         this.clientRepository = clientRepository;
@@ -44,37 +44,20 @@ public class Utils {
 
     public List<ReservationDto> reservationToDto(List<Reservation> reservations) {
         List<ReservationDto> dtos = new ArrayList<>();
-        ReservationDto dto = new ReservationDto();
         for (Reservation reservation : reservations) {
-            dto.setId(reservation.getId());
-            dto.setApartmentId(reservation.getApartment().getId());
-            dto.setClientId(reservation.getClient().getId());
-            dto.setStartDate(reservation.getStartDate());
-            dto.setEndDate(reservation.getEndDate());
-            dto.setCreatedDate(reservation.getCreatedDate());
-            dtos.add(dto);
+            dtos.add(reservationToDto(reservation));
         }
         return dtos;
     }
 
-    public Reservation reservationDtoToEntity(ReservationDto dto) {
+    public Reservation reservationDtoToEntity(ReservationDto dto, Apartment apartment, Client client) {
         Reservation reservation = new Reservation();
         reservation.setId(dto.getId());
         reservation.setStartDate(dto.getStartDate());
         reservation.setEndDate(dto.getEndDate());
         reservation.setCreatedDate(dto.getCreatedDate());
-
-        if (dto.getApartmentId() != null) {
-            Apartment apartment = apartmentRepository.findById(dto.getApartmentId())
-                    .orElseThrow(() -> new IllegalArgumentException("No Apartment found with ID: " + dto.getApartmentId()));
-            reservation.setApartment(apartment);
-        }
-
-        if (dto.getClientId() != null) {
-            Client client = clientRepository.findById(dto.getClientId())
-                    .orElseThrow(() -> new IllegalArgumentException("No client found with ID: " + dto.getClientId()));
-            reservation.setClient(client);
-        }
+        reservation.setApartment(apartment);
+        reservation.setClient(client);
         return reservation;
     }
 
@@ -111,7 +94,7 @@ public class Utils {
         dto.setLastName(owner.getLastName());
         dto.setEmail(owner.getEmail());
         dto.setPhoneNumber(owner.getPhoneNumber());
-        dto.setDateOfBirth(owner.getDateofBirth());
+        dto.setDateOfBirth(owner.getDateOfBirth());
         dto.setRegisteredDate(owner.getRegisteredDate());
         dto.setOwnedApartments(apartmentToDto(owner.getOwnedApartments()));
         return dto;
@@ -146,19 +129,19 @@ public class Utils {
         dto.setLastName(client.getLastName());
         dto.setEmail(client.getEmail());
         dto.setPhoneNumber(client.getPhoneNumber());
-        dto.setDateOfBirth(client.getDateofBirth());
+        dto.setDateOfBirth(client.getDateOfBirth());
         dto.setRegisteredDate(client.getRegisteredDate());
         return dto;
     }
 
-    public Client ClientDtoToEntity(ClientDto dto) {
+    public Client clientDtoToEntity(ClientDto dto) {
         Client client = new Client();
         client.setId(dto.getId());
         client.setFirstName(dto.getFirstName());
         client.setLastName(dto.getLastName());
         client.setEmail(dto.getEmail());
         client.setPhoneNumber(dto.getPhoneNumber());
-        client.setDateofBirth(dto.getDateOfBirth());
+        client.setDateOfBirth(dto.getDateOfBirth());
         client.setRegisteredDate(dto.getRegisteredDate());
         return client;
     }
@@ -171,14 +154,14 @@ public class Utils {
         return dtos;
     }
 
-    public Owner OwnerDtoToEntity(OwnerDto dto) {
+    public Owner ownerDtoToEntity(OwnerDto dto) {
         Owner owner = new Owner();
         owner.setId(dto.getId());
         owner.setFirstName(dto.getFirstName());
         owner.setLastName(dto.getLastName());
         owner.setEmail(dto.getEmail());
         owner.setPhoneNumber(dto.getPhoneNumber());
-        owner.setDateofBirth(dto.getDateOfBirth());
+        owner.setDateOfBirth(dto.getDateOfBirth());
         owner.setRegisteredDate(dto.getRegisteredDate());
         //owner.setOwnedApartments(apartmentToDto(owner.getOwnedApartments()));
         return owner;

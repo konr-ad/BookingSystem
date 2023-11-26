@@ -3,63 +3,54 @@ package com.booking.bookingSystem.controller;
 import com.booking.bookingSystem.dto.ReservationDto;
 import com.booking.bookingSystem.model.Reservation;
 import com.booking.bookingSystem.service.ReservationService;
-import com.booking.bookingSystem.utils.Utils;
+import com.booking.bookingSystem.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reservations")
 public class ReservationController {
 
-    private final Utils utils;
+    private final ValidationUtils validationUtils;
     private final ReservationService reservationService;
 
     @Autowired
-    public ReservationController(ReservationService reservationService, Utils utils) {
+    public ReservationController(ReservationService reservationService, ValidationUtils validationUtils) {
         this.reservationService = reservationService;
-        this.utils = utils;
+        this.validationUtils = validationUtils;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDto> getReservation(@PathVariable Long id) {
-        Optional<Reservation> reservation = reservationService.findById(id);
-        if(reservation.isPresent()) {
-            ReservationDto dto = utils.reservationToDto(reservation.get());
-            return ResponseEntity.ok(dto);
-        }
-        return ResponseEntity.notFound().build();
+        ReservationDto reservationDto = reservationService.findReservationDtoById(id);
+        return new ResponseEntity<>(reservationDto, HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationDto reservationDto) {
-        Reservation reservation = utils.reservationDtoToEntity(reservationDto);
-        Reservation createdReservation = reservationService.save(reservation);
-        return new ResponseEntity<>(utils.reservationToDto(createdReservation), HttpStatus.CREATED);
+    public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDto reservationDto, BindingResult bindingResult) {
+        ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
+        if (errorMap != null) return errorMap;
+        ReservationDto createdReservationDto = reservationService.createReservation(reservationDto);
+        return new ResponseEntity<>(createdReservationDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReservationDto> updateReservation(@PathVariable Long id, @RequestBody ReservationDto reservationDto) {
-        Optional<Reservation> reservation = reservationService.findById(id);
-        if(reservation.isPresent()) {
-            Reservation updatedReservation = utils.reservationDtoToEntity(reservationDto);
-            updatedReservation.setId(id);
-            Reservation savedReservation = reservationService.save(updatedReservation);
-            return ResponseEntity.ok(utils.reservationToDto(savedReservation));
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateReservation(@PathVariable Long id, @Valid @RequestBody ReservationDto reservationDto, BindingResult bindingResult) {
+        ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
+        if (errorMap != null) return errorMap;
+        ReservationDto updatedReservationDto = reservationService.updateReservation(id, reservationDto);
+        return new ResponseEntity<>(updatedReservationDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        Optional<Reservation> reservation = reservationService.findById(id);
-        if(reservation.isPresent()) {
-            reservationService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
+        reservationService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,84 +1,70 @@
 package com.booking.bookingSystem.controller;
 
 import com.booking.bookingSystem.dto.ApartmentDto;
-import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.service.ApartmentService;
-import com.booking.bookingSystem.utils.Utils;
+import com.booking.bookingSystem.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/apartments")
 public class ApartmentController {
-    private final Utils utils;
+    private final ValidationUtils validationUtils;
     private final ApartmentService apartmentService;
 
     @Autowired
-    public ApartmentController(ApartmentService apartmentService, Utils utils) {
+    public ApartmentController(ApartmentService apartmentService, ValidationUtils validationUtils) {
         this.apartmentService = apartmentService;
-        this.utils = utils;
+        this.validationUtils = validationUtils;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApartmentDto> getApartment(@PathVariable Long id) {
-        Optional<Apartment> apartment = apartmentService.findById(id);
-        if (apartment.isPresent()) {
-            ApartmentDto dto = utils.apartmentToDto(apartment.get());
-            return ResponseEntity.ok(dto);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getApartment(@PathVariable Long id) {
+        ApartmentDto apartmentDto = apartmentService.findApartmentDtoById(id);
+        return new ResponseEntity<>(apartmentDto, HttpStatus.OK);
     }
 
-    @GetMapping("/byname/{name}")
-    public ResponseEntity<ApartmentDto> getApartmentByName(@PathVariable String name) {
-        Optional<Apartment> apartment = apartmentService.findbyName(name);
-        if (apartment.isPresent()) {
-            ApartmentDto dto = utils.apartmentToDto(apartment.get());
-            return ResponseEntity.ok(dto);
-        }
-        return ResponseEntity.notFound().build();
+    @GetMapping
+    public ResponseEntity<?> getApartmentByName(@Valid @RequestParam String name, BindingResult bindingResult) {
+        ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
+        if (errorMap != null) return errorMap;
+        ApartmentDto apartmentDto = apartmentService.findbyName(name);
+        return new ResponseEntity<>(apartmentDto, HttpStatus.OK);
     }
 
-    @GetMapping("/bylocation/{location}")
-    public ResponseEntity<ApartmentDto> getApartmentByLocation(@PathVariable String location) {
-        Optional<Apartment> apartment = apartmentService.findbyLocation(location);
-        if (apartment.isPresent()) {
-            ApartmentDto dto = utils.apartmentToDto(apartment.get());
-            return ResponseEntity.ok(dto);
-        }
-        return ResponseEntity.notFound().build();
+    @GetMapping()
+    public ResponseEntity<?> getApartmentByLocation(@Valid @RequestParam String location, BindingResult bindingResult) {
+        ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
+        if (errorMap != null) return errorMap;
+        List<ApartmentDto> apartmentsDto = apartmentService.findbyLocation(location);
+        return new ResponseEntity<>(apartmentsDto, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ApartmentDto> createApartment(@RequestBody ApartmentDto apartmentDto) {
-        Apartment apartment = utils.apartmentDtoToEntity(apartmentDto);
-        Apartment createdApartment = apartmentService.save(apartment);
-        return new ResponseEntity<>(utils.apartmentToDto(createdApartment), HttpStatus.CREATED);
+    public ResponseEntity<?> createApartment(@Valid @RequestBody ApartmentDto apartmentDto, BindingResult result) {
+        ResponseEntity<?> errorMap = validationUtils.getResponseEntity(result);
+        if (errorMap != null) return errorMap;
+        ApartmentDto createdApartmentDto = apartmentService.save(apartmentDto);
+        return new ResponseEntity<>(createdApartmentDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApartmentDto> updateApartment(@PathVariable Long id, @RequestBody ApartmentDto apartmentDto) {
-        Optional<Apartment> apartment = apartmentService.findById(id);
-        if (apartment.isPresent()) {
-            Apartment updatedApartment = utils.apartmentDtoToEntity(apartmentDto);
-            updatedApartment.setId(id);
-            Apartment savedApartment = apartmentService.save(updatedApartment);
-            return ResponseEntity.ok(utils.apartmentToDto(savedApartment));
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateApartment(@PathVariable Long id, @Valid @RequestBody ApartmentDto apartmentDto, BindingResult result) {
+        ResponseEntity<?> errorMap = validationUtils.getResponseEntity(result);
+        if (errorMap != null) return errorMap;
+        ApartmentDto updatedApartmentDto = apartmentService.update(id, apartmentDto);
+        return new ResponseEntity<>(updatedApartmentDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteApartment(@PathVariable Long id) {
-        Optional<Apartment> apartment = apartmentService.findById(id);
-        if (apartment.isPresent()) {
-            apartmentService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        apartmentService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

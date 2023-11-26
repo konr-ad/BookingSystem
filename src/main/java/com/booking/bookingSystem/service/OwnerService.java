@@ -16,12 +16,12 @@ public class OwnerService {
 
     private final OwnerRepository ownerRepository;
 
-    private final DtoUtils utils;
+    private final DtoUtils dtoUtils;
 
     @Autowired
-    public OwnerService(OwnerRepository ownerRepository, DtoUtils utils) {
+    public OwnerService(OwnerRepository ownerRepository, DtoUtils dtoUtils) {
         this.ownerRepository = ownerRepository;
-        this.utils = utils;
+        this.dtoUtils = dtoUtils;
     }
 
     public Owner findOwnerById(Long id) {
@@ -30,7 +30,7 @@ public class OwnerService {
     }
     public OwnerDto findOwnerDtoById(Long id) {
         Owner owner = findOwnerById(id);
-        return utils.ownerToDto(owner);
+        return dtoUtils.ownerToDto(owner);
     }
 
     public Optional<Owner> findByEmail(String email) {
@@ -55,16 +55,16 @@ public class OwnerService {
     }
 
     public OwnerDto createOwner(OwnerDto dto) {
-        Owner owner = utils.OwnerDtoToEntity(dto);
+        Owner owner = dtoUtils.ownerDtoToEntity(dto);
         Owner savedOwner = ownerRepository.save(owner);
-        return utils.ownerToDto(savedOwner);
+        return dtoUtils.ownerToDto(savedOwner);
     }
 
     public OwnerDto updateOwner(Long id, OwnerDto dto) {
         Owner existingOwner = findOwnerById(id);
         updateOwnerFields(existingOwner, dto);
-        Owner savedOwner = ownerRepository.save(existingOwner);
-        return utils.ownerToDto(savedOwner);
+        Owner updatedOwner = ownerRepository.save(existingOwner);
+        return dtoUtils.ownerToDto(updatedOwner);
     }
 
     private void updateOwnerFields(Owner owner, OwnerDto dto) {
@@ -74,6 +74,5 @@ public class OwnerService {
         owner.setPhoneNumber(dto.getPhoneNumber());
         owner.setDateOfBirth(dto.getDateOfBirth());
         owner.setRegisteredDate(dto.getRegisteredDate());
-        // Ustaw inne pola w zależności od potrzeb
     }
 }

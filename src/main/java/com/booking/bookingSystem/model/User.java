@@ -3,9 +3,9 @@ package com.booking.bookingSystem.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -19,18 +19,21 @@ public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "firstName", nullable = false)
+    @Column(name = "firstName")
+    @NotNull
     private String firstName;
-    @NonNull
+    @NotNull
     private String lastName;
-    @NonNull
+    @NotNull
     private String email;
-    @NonNull
+    @NotNull
     private String phoneNumber;
     //private String password;
 
-    @Column(name = "dateofbirth", nullable = true)
-    private LocalDate dateofBirth;
+    @Column(name = "dateofbirth")
+    @NotNull
+    private LocalDate dateOfBirth;
 
+    @NotNull
     private LocalDate registeredDate;
 }

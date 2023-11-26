@@ -1,7 +1,10 @@
 package com.booking.bookingSystem.service;
 
+import com.booking.bookingSystem.dto.ClientDto;
+import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.repository.ClientRepository;
+import com.booking.bookingSystem.utils.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +15,22 @@ import java.util.Optional;
 public class ClientService {
 
     private final ClientRepository clientRepository;
+    private final DtoUtils dtoUtils;
 
     @Autowired
-    public ClientService (ClientRepository clientRepository) {
+    public ClientService(ClientRepository clientRepository, DtoUtils dtoUtils) {
         this.clientRepository = clientRepository;
+        this.dtoUtils = dtoUtils;
     }
 
-    public Optional<Client> findById(Long id) {
-        return clientRepository.findById(id);
+    public Client findClientById(Long id) {
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Owner with id: " + id + " not found"));
+    }
+
+    public ClientDto findClientDtoById(Long id) {
+        Client client = findClientById(id);
+        return dtoUtils.clientToDto(client);
     }
 
     public Optional<Client> findByEmail(String email) {
@@ -40,5 +51,27 @@ public class ClientService {
 
     public void deleteById(Long id) {
         clientRepository.deleteById(id);
+    }
+
+    public ClientDto updateClient(Long id, ClientDto clientDto) {
+        Client existingClient = findClientById(id);
+        updateClientFields(existingClient, clientDto);
+        Client savedCLient = clientRepository.save(existingClient);
+        return dtoUtils.clientToDto(savedCLient);
+    }
+
+    private void updateClientFields(Client client, ClientDto dto) {
+        client.setFirstName(dto.getFirstName());
+        client.setLastName(dto.getLastName());
+        client.setEmail(dto.getEmail());
+        client.setPhoneNumber(dto.getPhoneNumber());
+        client.setDateOfBirth(dto.getDateOfBirth());
+        client.setRegisteredDate(dto.getRegisteredDate());
+    }
+
+    public ClientDto createClient(ClientDto clientDto) {
+        Client client = dtoUtils.clientDtoToEntity(clientDto);
+        Client savedClient = clientRepository.save(client);
+        return dtoUtils.clientToDto(savedClient);
     }
 }
