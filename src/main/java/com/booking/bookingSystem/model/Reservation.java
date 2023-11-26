@@ -1,5 +1,6 @@
 package com.booking.bookingSystem.model;
 
+import com.booking.bookingSystem.enums.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,11 +30,15 @@ public class Reservation {
     @JoinColumn(name = "apartment_id")
     private Apartment apartment;
     @NotNull
+    @Column(name = "start_date")
     private LocalDate startDate;
     @NotNull
+    @Column(name = "end_date")
     private LocalDate endDate;
     @NotNull
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reservation_status")
+    private ReservationStatus reservationStatus;
     @NotNull
     @Column(name = "created_date")
     private LocalDateTime createdDate;
@@ -41,9 +46,9 @@ public class Reservation {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
     @NotNull
+    @Column(name = "total_price")
     private BigDecimal totalPrice;
-    @NotNull
-    private String paymentStatus;
 
+    @Column(name = "notes")
     private String notes;
 }

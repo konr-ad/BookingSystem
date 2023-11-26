@@ -30,7 +30,7 @@ public class ApartmentController {
         return new ResponseEntity<>(apartmentDto, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/byname")
     public ResponseEntity<?> getApartmentByName(@Valid @RequestParam String name, BindingResult bindingResult) {
         ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
         if (errorMap != null) return errorMap;
@@ -38,7 +38,7 @@ public class ApartmentController {
         return new ResponseEntity<>(apartmentDto, HttpStatus.OK);
     }
 
-    @GetMapping()
+    @GetMapping("/bylocation")
     public ResponseEntity<?> getApartmentByLocation(@Valid @RequestParam String location, BindingResult bindingResult) {
         ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
         if (errorMap != null) return errorMap;

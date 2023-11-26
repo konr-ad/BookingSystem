@@ -60,18 +60,14 @@ public class ClientService {
         return dtoUtils.clientToDto(savedCLient);
     }
 
-    private void updateClientFields(Client client, ClientDto dto) {
-        client.setFirstName(dto.getFirstName());
-        client.setLastName(dto.getLastName());
-        client.setEmail(dto.getEmail());
-        client.setPhoneNumber(dto.getPhoneNumber());
-        client.setDateOfBirth(dto.getDateOfBirth());
-        client.setRegisteredDate(dto.getRegisteredDate());
-    }
-
     public ClientDto createClient(ClientDto clientDto) {
         Client client = dtoUtils.clientDtoToEntity(clientDto);
         Client savedClient = clientRepository.save(client);
         return dtoUtils.clientToDto(savedClient);
     }
+    private void updateClientFields(Client client, ClientDto dto) {
+        client.setEmail(dto.getEmail());
+        client.setPhoneNumber(dto.getPhoneNumber());
+    }
+
 }

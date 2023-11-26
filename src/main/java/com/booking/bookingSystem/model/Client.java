@@ -19,7 +19,4 @@ public class Client extends User{
 
     private String preferredPaymentMethod;
 
-    @OneToMany(mappedBy = "reservation_id")
-    private List<Reservation> pastReservations = new ArrayList<>();
-
 }

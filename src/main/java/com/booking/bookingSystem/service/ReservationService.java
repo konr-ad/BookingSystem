@@ -1,7 +1,5 @@
 package com.booking.bookingSystem.service;
 
-import com.booking.bookingSystem.dto.ApartmentDto;
-import com.booking.bookingSystem.dto.ClientDto;
 import com.booking.bookingSystem.dto.ReservationDto;
 import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.Apartment;
@@ -20,9 +18,7 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-
     private final ApartmentRepository apartmentRepository;
-
     private final ClientRepository clientRepository;
 
     private final DtoUtils dtoUtils;
@@ -45,18 +41,18 @@ public class ReservationService {
         return dtoUtils.reservationToDto(reservation);
     }
 
-    public ReservationDto createReservation(ReservationDto reservationDto, ApartmentDto apartmentDto, ClientDto clientDto) {
-        Reservation reservation = dtoUtils.reservationDtoToEntity(reservationDto, apartmentDto, clientDto);
+    public ReservationDto createReservation(ReservationDto reservationDto) {
+        Apartment apartment = apartmentRepository.findById(reservationDto.getApartmentId())
+                .orElseThrow(() -> new EntityNotFoundException("Apartment not found"));
+        Client client = clientRepository.findById(reservationDto.getClientId())
+                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
+        Reservation reservation = dtoUtils.reservationDtoToEntity(reservationDto, apartment, client);
         Reservation savedReservation = reservationRepository.save(reservation);
         return dtoUtils.reservationToDto(savedReservation);
     }
 
     public List<Reservation> findByClient(Client client) {
         return reservationRepository.findByClient(client);
-    }
-
-    public List<Reservation> findByApartment(Apartment apartament){
-        return reservationRepository.findByApartment(apartament);
     }
 
     public Reservation save(Reservation reservation) {
@@ -75,12 +71,13 @@ public class ReservationService {
         return dtoUtils.reservationToDto(updatedReservation);
     }
 
-    private void updateReservationFields(Reservation reservation, ReservationDto dto) {
-        reservation.setApartment(dto.getApartmentId());
-        reservation.setLastName(dto.getLastName());
-        reservation.setEmail(dto.getEmail());
-        reservation.setPhoneNumber(dto.getPhoneNumber());
-        reservation.setDateOfBirth(dto.getDateOfBirth());
-        reservation.setRegisteredDate(dto.getRegisteredDate());
+    private void updateReservationFields(Reservation existingReservation, ReservationDto dto) {
+        Apartment apartment = apartmentRepository.findById(dto.getApartmentId())
+                .orElseThrow(() -> new EntityNotFoundException("Apartment not found"));
+        existingReservation.setApartment(apartment);
+        existingReservation.setNotes(dto.getNotes());
+        existingReservation.setReservationStatus(dto.getReservationStatus());
+        existingReservation.setEndDate(dto.getEndDate());
+        existingReservation.setTotalPrice(dto.getTotalPrice());
     }
 }

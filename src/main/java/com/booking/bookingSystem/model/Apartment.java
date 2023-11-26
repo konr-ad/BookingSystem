@@ -35,6 +35,5 @@ public class Apartment {
     private int capacity;
     @NotNull
     private String location;
-//    private List<String> amenities;
 
 }

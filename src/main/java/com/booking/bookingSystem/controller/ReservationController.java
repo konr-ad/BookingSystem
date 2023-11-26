@@ -30,7 +30,7 @@ public class ReservationController {
         return new ResponseEntity<>(reservationDto, HttpStatus.OK);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDto reservationDto, BindingResult bindingResult) {
         ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
         if (errorMap != null) return errorMap;

@@ -33,21 +33,21 @@ public class DtoUtils {
         return dtos;
     }
 
-    public Reservation reservationDtoToEntity(ReservationDto dto, ApartmentDto apartmentDto, ClientDto clientDto) {
+    public Reservation reservationDtoToEntity(ReservationDto dto, Apartment apartment, Client client) {
         Reservation reservation = new Reservation();
         reservation.setId(dto.getId());
         reservation.setStartDate(dto.getStartDate());
         reservation.setEndDate(dto.getEndDate());
         reservation.setCreatedDate(dto.getCreatedDate());
-        reservation.setApartment(apartmentDtoToEntity(apartmentDto));
-        reservation.setClient(clientDtoToEntity(clientDto));
+        reservation.setApartment(apartment);
+        reservation.setClient(client);
         return reservation;
     }
 
-    public List<Reservation> reservationDtoToEntity(List<ReservationDto> reservationsDto, ApartmentDto apartmentDto, ClientDto clientDto) {
+    public List<Reservation> reservationDtoToEntity(List<ReservationDto> reservationsDto, Apartment apartment, Client client) {
         List<Reservation> reservations = new ArrayList<>();
         for (ReservationDto dto : reservationsDto) {
-            reservations.add(reservationDtoToEntity(dto, apartmentDto, clientDto));
+            reservations.add(reservationDtoToEntity(dto, apartment, client));
         }
         return reservations;
     }
@@ -64,7 +64,6 @@ public class DtoUtils {
         apartment.setLocation(dto.getLocation());
         return apartment;
     }
-
 
 
     public ApartmentDto apartmentToDto(Apartment apartment) {
@@ -96,7 +95,6 @@ public class DtoUtils {
         dto.setEmail(client.getEmail());
         dto.setPhoneNumber(client.getPhoneNumber());
         dto.setDateOfBirth(client.getDateOfBirth());
-        dto.setRegisteredDate(client.getRegisteredDate());
         return dto;
     }
 
@@ -108,15 +106,7 @@ public class DtoUtils {
         client.setEmail(dto.getEmail());
         client.setPhoneNumber(dto.getPhoneNumber());
         client.setDateOfBirth(dto.getDateOfBirth());
-        client.setRegisteredDate(dto.getRegisteredDate());
         return client;
     }
 
-    public List<ClientDto> clientToDto(List<Client> clients) {
-        List<ClientDto> dtos = new ArrayList<>();
-        for (Client client : clients) {
-            dtos.add(clientToDto(client));
-        }
-        return dtos;
-    }
 }
