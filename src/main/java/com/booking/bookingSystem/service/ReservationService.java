@@ -37,7 +37,7 @@ public class ReservationService {
 
     public Reservation findReservationById(Long id) {
         return reservationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Owner with id: " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Reservation with id: " + id + " not found"));
     }
 
     public ReservationDto findReservationDtoById(Long id) {

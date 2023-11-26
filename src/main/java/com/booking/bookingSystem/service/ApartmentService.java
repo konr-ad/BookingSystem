@@ -26,7 +26,7 @@ public class ApartmentService {
 
     public Apartment findApartmentById(Long id) {
         return apartmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Owner with id: " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Apartment with id: " + id + " not found"));
     }
 
     public ApartmentDto findApartmentDtoById(Long id) {
@@ -65,7 +65,7 @@ public class ApartmentService {
 
     public ApartmentDto findbyName(String name) {
         Apartment apartment = apartmentRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException("Owner with name: " + name + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Apartment with name: " + name + " not found"));
         return dtoUtils.apartmentToDto(apartment);
     }
 
@@ -83,8 +83,5 @@ public class ApartmentService {
         apartment.setPricePerNight(dto.getPricePerNight());
         apartment.setNumberOfRooms(dto.getNumberOfRooms());
         apartment.setLocation(dto.getLocation());
-//        if (true)  POLE OWNER not null
-        Owner owner = dtoUtils.ownerDtoToEntity(dto.getOwner());
-        apartment.setOwner(owner);
     }
 }

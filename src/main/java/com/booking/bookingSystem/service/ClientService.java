@@ -25,7 +25,7 @@ public class ClientService {
 
     public Client findClientById(Long id) {
         return clientRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Owner with id: " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Client with id: " + id + " not found"));
     }
 
     public ClientDto findClientDtoById(Long id) {

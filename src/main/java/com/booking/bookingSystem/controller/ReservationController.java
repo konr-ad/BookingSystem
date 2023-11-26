@@ -1,7 +1,6 @@
 package com.booking.bookingSystem.controller;
 
 import com.booking.bookingSystem.dto.ReservationDto;
-import com.booking.bookingSystem.model.Reservation;
 import com.booking.bookingSystem.service.ReservationService;
 import com.booking.bookingSystem.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reservations")
