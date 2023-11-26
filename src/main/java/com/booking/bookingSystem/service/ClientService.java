@@ -56,7 +56,7 @@ public class ClientService {
     public ClientDto updateClient(Long id, ClientDto clientDto) {
         Client existingClient = findClientById(id);
         updateClientFields(existingClient, clientDto);
-        Client savedCLient = clientRepository.save(existingClient);
+        Client savedCLient = save(existingClient);
         return dtoUtils.clientToDto(savedCLient);
     }
 
