@@ -36,8 +36,5 @@ public class Apartment {
     @NotNull
     private String location;
 //    private List<String> amenities;
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
 
 }

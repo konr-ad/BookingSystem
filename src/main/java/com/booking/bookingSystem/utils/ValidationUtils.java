@@ -2,7 +2,6 @@ package com.booking.bookingSystem.utils;
 
 import com.booking.bookingSystem.repository.ApartmentRepository;
 import com.booking.bookingSystem.repository.ClientRepository;
-import com.booking.bookingSystem.repository.OwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +14,6 @@ import java.util.Map;
 
 @Component
 public class ValidationUtils {
-    private final OwnerRepository ownerRepository;
-    private final ApartmentRepository apartmentRepository;
-    private final ClientRepository clientRepository;
-
-    @Autowired
-    public ValidationUtils(OwnerRepository ownerRepository, ApartmentRepository apartmentRepository, ClientRepository clientRepository) {
-        this.ownerRepository = ownerRepository;
-        this.apartmentRepository = apartmentRepository;
-        this.clientRepository = clientRepository;
-    }
 
     public ResponseEntity<?> getResponseEntity(BindingResult result) {
         if (result.hasErrors()) {

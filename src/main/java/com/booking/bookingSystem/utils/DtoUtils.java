@@ -2,16 +2,10 @@ package com.booking.bookingSystem.utils;
 
 import com.booking.bookingSystem.dto.ApartmentDto;
 import com.booking.bookingSystem.dto.ClientDto;
-import com.booking.bookingSystem.dto.OwnerDto;
 import com.booking.bookingSystem.dto.ReservationDto;
 import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Client;
-import com.booking.bookingSystem.model.Owner;
 import com.booking.bookingSystem.model.Reservation;
-import com.booking.bookingSystem.repository.ApartmentRepository;
-import com.booking.bookingSystem.repository.ClientRepository;
-import com.booking.bookingSystem.repository.OwnerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,17 +13,6 @@ import java.util.List;
 
 @Component
 public class DtoUtils {
-
-    private final OwnerRepository ownerRepository;
-    private final ApartmentRepository apartmentRepository;
-    private final ClientRepository clientRepository;
-
-    @Autowired
-    public DtoUtils(OwnerRepository ownerRepository, ApartmentRepository apartmentRepository, ClientRepository clientRepository) {
-        this.ownerRepository = ownerRepository;
-        this.apartmentRepository = apartmentRepository;
-        this.clientRepository = clientRepository;
-    }
 
     public ReservationDto reservationToDto(Reservation reservation) {
         ReservationDto dto = new ReservationDto();
@@ -50,21 +33,21 @@ public class DtoUtils {
         return dtos;
     }
 
-    public Reservation reservationDtoToEntity(ReservationDto dto, Apartment apartment, Client client) {
+    public Reservation reservationDtoToEntity(ReservationDto dto, ApartmentDto apartmentDto, ClientDto clientDto) {
         Reservation reservation = new Reservation();
         reservation.setId(dto.getId());
         reservation.setStartDate(dto.getStartDate());
         reservation.setEndDate(dto.getEndDate());
         reservation.setCreatedDate(dto.getCreatedDate());
-        reservation.setApartment(apartment);
-        reservation.setClient(client);
+        reservation.setApartment(apartmentDtoToEntity(apartmentDto));
+        reservation.setClient(clientDtoToEntity(clientDto));
         return reservation;
     }
 
-    public List<Reservation> reservationDtoToEntity(List<ReservationDto> dtos) {
+    public List<Reservation> reservationDtoToEntity(List<ReservationDto> reservationsDto, ApartmentDto apartmentDto, ClientDto clientDto) {
         List<Reservation> reservations = new ArrayList<>();
-        for (ReservationDto dto : dtos) {
-            reservations.add(reservationDtoToEntity(dto));
+        for (ReservationDto dto : reservationsDto) {
+            reservations.add(reservationDtoToEntity(dto, apartmentDto, clientDto));
         }
         return reservations;
     }
@@ -79,26 +62,10 @@ public class DtoUtils {
         apartment.setNumberOfRooms(dto.getNumberOfRooms());
         apartment.setCapacity(dto.getCapacity());
         apartment.setLocation(dto.getLocation());
-        if (dto.getOwner() != null) {
-            Owner owner = ownerRepository.findById(dto.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("No owner with ID: " + dto.getId()));
-            apartment.setOwner(owner);
-        }
         return apartment;
     }
 
-    public OwnerDto ownerToDto(Owner owner) {
-        OwnerDto dto = new OwnerDto();
-        dto.setId(owner.getId());
-        dto.setFirstName(owner.getFirstName());
-        dto.setLastName(owner.getLastName());
-        dto.setEmail(owner.getEmail());
-        dto.setPhoneNumber(owner.getPhoneNumber());
-        dto.setDateOfBirth(owner.getDateOfBirth());
-        dto.setRegisteredDate(owner.getRegisteredDate());
-        dto.setOwnedApartments(apartmentToDto(owner.getOwnedApartments()));
-        return dto;
-    }
+
 
     public ApartmentDto apartmentToDto(Apartment apartment) {
         ApartmentDto dto = new ApartmentDto();
@@ -109,7 +76,6 @@ public class DtoUtils {
         dto.setPricePerNight(apartment.getPricePerNight());
         dto.setNumberOfRooms(apartment.getNumberOfRooms());
         dto.setCapacity(apartment.getCapacity());
-        dto.setOwner(ownerToDto(apartment.getOwner()));
         dto.setLocation(apartment.getLocation());
         return dto;
     }
@@ -152,18 +118,5 @@ public class DtoUtils {
             dtos.add(clientToDto(client));
         }
         return dtos;
-    }
-
-    public Owner ownerDtoToEntity(OwnerDto dto) {
-        Owner owner = new Owner();
-        owner.setId(dto.getId());
-        owner.setFirstName(dto.getFirstName());
-        owner.setLastName(dto.getLastName());
-        owner.setEmail(dto.getEmail());
-        owner.setPhoneNumber(dto.getPhoneNumber());
-        owner.setDateOfBirth(dto.getDateOfBirth());
-        owner.setRegisteredDate(dto.getRegisteredDate());
-        //owner.setOwnedApartments(apartmentToDto(owner.getOwnedApartments()));
-        return owner;
     }
 }

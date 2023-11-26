@@ -3,7 +3,6 @@ package com.booking.bookingSystem.service;
 import com.booking.bookingSystem.dto.ApartmentDto;
 import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.Apartment;
-import com.booking.bookingSystem.model.Owner;
 import com.booking.bookingSystem.repository.ApartmentRepository;
 import com.booking.bookingSystem.utils.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
