@@ -52,12 +52,6 @@ public class ApartmentService {
         throw new EntityNotFoundException("No apartments found with " + numberOfRooms + " rooms");
     }
 
-    public List<ApartmentDto> findByOwner(Owner owner) {
-        Optional<List<Apartment>> apartments = apartmentRepository.findByOwner(owner);
-        if (apartments.isPresent()) return dtoUtils.apartmentToDto(apartments.get());
-        throw new EntityNotFoundException("No apartmets found for owner: " + owner);
-    }
-
     public ApartmentDto save(ApartmentDto apartmentDto) {
         Apartment apartmentToSave = dtoUtils.apartmentDtoToEntity(apartmentDto);
         apartmentRepository.save(apartmentToSave);
