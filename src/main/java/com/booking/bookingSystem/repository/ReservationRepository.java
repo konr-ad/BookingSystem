@@ -1,7 +1,6 @@
 package com.booking.bookingSystem.repository;
 
 import com.booking.bookingSystem.model.Client;
-import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

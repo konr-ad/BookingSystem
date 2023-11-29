@@ -51,4 +51,7 @@ public class Reservation {
 
     @Column(name = "notes")
     private String notes;
+
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private DigitalKey digitalKey;
 }

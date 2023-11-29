@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -18,15 +19,19 @@ public class DigitalKey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "qr_code", nullable = false)
+    @NotNull
+    @Column(name = "qr_code")
     private String qrCode;
 
-    @Column(name = "valid_from", nullable = false)
+    @NotNull
+    @Column(name = "valid_from")
     private LocalDateTime validFrom;
 
-    @Column(name = "valid_until", nullable = false)
+    @NotNull
+    @Column(name = "valid_until")
     private LocalDateTime validUntil;
 
+    @NotNull
     @OneToOne
     @JoinColumn(name = "reservation_id", referencedColumnName = "id")
     private Reservation reservation;
