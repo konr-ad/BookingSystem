@@ -12,13 +12,25 @@ import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 @Component
 public class QrCodeGenerator {
+
+    public static BufferedImage generateTestQRCodeImage(String barcodeText) throws Exception {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+
+        BitMatrix bitMatrix = qrCodeWriter.encode(barcodeText, BarcodeFormat.QR_CODE, 200, 200, hints);
+
+        return MatrixToImageWriter.toBufferedImage(bitMatrix);
+    }
     public String generateQRCodeImage(String data) throws WriterException {
     int width = 300;
     int height = 300;
@@ -51,5 +63,19 @@ public class QrCodeGenerator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public BufferedImage decodeBase64ToImage(String base64String) throws IOException {
+        byte[] imageBytes = Base64.getDecoder().decode(base64String);
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+        BufferedImage image = ImageIO.read(bis);
+        bis.close();
+        return image;
+    }
+
+    public File saveImageToFile(BufferedImage image, String path, String formatName) throws IOException {
+        File outputFile = new File(path);
+        ImageIO.write(image, formatName, outputFile);
+        return outputFile;
     }
 }

@@ -22,10 +22,10 @@ public class DigitalKeyService {
         this.qrCodeGenerator = qrCodeGenerator;
     }
 
-//    public BufferedImage testGenerateQRCode() throws Exception {
-//        String qrCodeData = "http://example.com";
-//        return qrCodeGenerator.generateQRCodeImage(qrCodeData);
-//    }
+    public BufferedImage generateTestQRCode() throws Exception {
+        String qrCodeData = "http://example.com";
+        return QrCodeGenerator.generateTestQRCodeImage(qrCodeData);
+    }
 
     public DigitalKey createAndSaveDigitalKey(String qrCode, LocalDateTime validFrom, LocalDateTime validUntil, Reservation reservation) {
         DigitalKey digitalKey = new DigitalKey();

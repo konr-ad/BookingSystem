@@ -34,10 +34,7 @@ public class ReservationDto {
     private LocalDate endDate;
 
     @NotNull(message = "Reservation status is required")
-    private ReservationStatus reservationStatus;
-
-    @PastOrPresent(message = "Created date must be in the past or present")
-    private LocalDateTime createdDate;
+    private String reservationStatus;
 
     private LocalDateTime modifiedDate;
 

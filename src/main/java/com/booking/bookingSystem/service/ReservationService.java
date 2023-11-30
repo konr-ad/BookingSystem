@@ -1,6 +1,7 @@
 package com.booking.bookingSystem.service;
 
 import com.booking.bookingSystem.dto.ReservationDto;
+import com.booking.bookingSystem.enums.ReservationStatus;
 import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Client;
@@ -87,7 +88,7 @@ public class ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException("Apartment not found"));
         existingReservation.setApartment(apartment);
         existingReservation.setNotes(dto.getNotes());
-        existingReservation.setReservationStatus(dto.getReservationStatus());
+        existingReservation.setReservationStatus(ReservationStatus.valueOf(dto.getReservationStatus()));
         existingReservation.setEndDate(dto.getEndDate());
         existingReservation.setTotalPrice(dto.getTotalPrice());
     }

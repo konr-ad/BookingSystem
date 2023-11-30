@@ -3,6 +3,7 @@ package com.booking.bookingSystem.utils;
 import com.booking.bookingSystem.dto.ApartmentDto;
 import com.booking.bookingSystem.dto.ClientDto;
 import com.booking.bookingSystem.dto.ReservationDto;
+import com.booking.bookingSystem.enums.ReservationStatus;
 import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.model.Reservation;
@@ -21,7 +22,10 @@ public class DtoUtils {
         dto.setClientId(reservation.getClient().getId());
         dto.setStartDate(reservation.getStartDate());
         dto.setEndDate(reservation.getEndDate());
-        dto.setCreatedDate(reservation.getCreatedDate());
+        dto.setReservationStatus(reservation.getReservationStatus().toString());
+        dto.setModifiedDate(reservation.getModifiedDate());
+        dto.setTotalPrice(reservation.getTotalPrice());
+        dto.setNotes(reservation.getNotes());
         return dto;
     }
 
@@ -36,11 +40,13 @@ public class DtoUtils {
     public Reservation reservationDtoToEntity(ReservationDto dto, Apartment apartment, Client client) {
         Reservation reservation = new Reservation();
         reservation.setId(dto.getId());
+        reservation.setClient(client);
+        reservation.setApartment(apartment);
         reservation.setStartDate(dto.getStartDate());
         reservation.setEndDate(dto.getEndDate());
-        reservation.setCreatedDate(dto.getCreatedDate());
-        reservation.setApartment(apartment);
-        reservation.setClient(client);
+        reservation.setReservationStatus(ReservationStatus.valueOf(dto.getReservationStatus()));
+        reservation.setModifiedDate(dto.getModifiedDate());
+        reservation.setTotalPrice(dto.getTotalPrice());
         return reservation;
     }
 
@@ -95,6 +101,7 @@ public class DtoUtils {
         dto.setEmail(client.getEmail());
         dto.setPhoneNumber(client.getPhoneNumber());
         dto.setDateOfBirth(client.getDateOfBirth());
+        dto.setPreferredPaymentMethod(client.getPreferredPaymentMethod());
         return dto;
     }
 
@@ -106,6 +113,7 @@ public class DtoUtils {
         client.setEmail(dto.getEmail());
         client.setPhoneNumber(dto.getPhoneNumber());
         client.setDateOfBirth(dto.getDateOfBirth());
+        client.setPreferredPaymentMethod(dto.getPreferredPaymentMethod());
         return client;
     }
 
