@@ -86,7 +86,7 @@ public class ReservationService {
     private void updateReservationFields(Reservation existingReservation, ReservationDto dto) {
         Apartment apartment = apartmentRepository.findById(dto.getApartmentId())
                 .orElseThrow(() -> new EntityNotFoundException("Apartment not found"));
-        existingReservation.setApartment(apartment);
+//        existingReservation.setApartment(apartment);
         existingReservation.setNotes(dto.getNotes());
         existingReservation.setReservationStatus(ReservationStatus.valueOf(dto.getReservationStatus()));
         existingReservation.setEndDate(dto.getEndDate());

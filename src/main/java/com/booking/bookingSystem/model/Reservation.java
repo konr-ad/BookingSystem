@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,9 +26,8 @@ public class Reservation {
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
     private Client client;
 
-    @ManyToOne
-    @JoinColumn(name = "apartment_id")
-    private Apartment apartment;
+    @OneToMany(mappedBy = "reservation")
+    private List<Apartment> apartment;
     @NotNull
     @Column(name = "start_date")
     private LocalDate startDate;

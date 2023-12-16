@@ -35,5 +35,8 @@ public class Apartment {
     private int capacity;
     @NotNull
     private String location;
+    @ManyToOne
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
 
 }

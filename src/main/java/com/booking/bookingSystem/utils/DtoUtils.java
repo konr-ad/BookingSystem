@@ -18,7 +18,7 @@ public class DtoUtils {
     public ReservationDto reservationToDto(Reservation reservation) {
         ReservationDto dto = new ReservationDto();
         dto.setId(reservation.getId());
-        dto.setApartmentId(reservation.getApartment().getId());
+        dto.setApartmentId(reservation.getApartment().get(0).getId());
         dto.setClientId(reservation.getClient().getId());
         dto.setStartDate(reservation.getStartDate());
         dto.setEndDate(reservation.getEndDate());
@@ -41,7 +41,7 @@ public class DtoUtils {
         Reservation reservation = new Reservation();
         reservation.setId(dto.getId());
         reservation.setClient(client);
-        reservation.setApartment(apartment);
+        reservation.setApartment((List<Apartment>) apartment);
         reservation.setStartDate(dto.getStartDate());
         reservation.setEndDate(dto.getEndDate());
         reservation.setReservationStatus(ReservationStatus.valueOf(dto.getReservationStatus()));
