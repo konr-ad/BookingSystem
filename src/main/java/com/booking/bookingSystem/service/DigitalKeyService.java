@@ -27,6 +27,12 @@ public class DigitalKeyService {
         return QrCodeGenerator.generateTestQRCodeImage(qrCodeData);
     }
 
+    public boolean validateQRCode(String qrCode) {
+        DigitalKey digitalKey = digitalKeyRepository.findByQrCode(qrCode);
+        return digitalKey != null && digitalKey.getValidFrom().isBefore(LocalDateTime.now())
+                && digitalKey.getValidUntil().isAfter(LocalDateTime.now());
+    }
+
     public DigitalKey createAndSaveDigitalKey(String qrCode, LocalDateTime validFrom, LocalDateTime validUntil, Reservation reservation) {
         DigitalKey digitalKey = new DigitalKey();
         digitalKey.setQrCode(qrCode);
@@ -34,5 +40,13 @@ public class DigitalKeyService {
         digitalKey.setValidUntil(validUntil);
         digitalKey.setReservation(reservation);
         return digitalKeyRepository.save(digitalKey);
+    }
+
+    public DigitalKey createDigitalKey(DigitalKey digitalKey) {
+        DigitalKey newDigitalKey = new DigitalKey();
+        newDigitalKey.setQrCode(digitalKey.getQrCode());
+        newDigitalKey.setValidFrom(digitalKey.getValidFrom());
+        newDigitalKey.setValidUntil(digitalKey.getValidUntil());
+        return digitalKeyRepository.save(newDigitalKey);
     }
 }

@@ -17,7 +17,7 @@ public class EmailService {
 
         // Dane uwierzytelniające konta Gmail
         final String myAccountEmail = "konradtestowy92@gmail.com";
-        final String password = "Co0inerbla";
+        final String password = "lrcc bgvm jkzt ssxh ";
 
 
         Session session = Session.getInstance(properties, new Authenticator() {

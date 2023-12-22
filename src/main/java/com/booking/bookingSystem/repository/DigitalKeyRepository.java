@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DigitalKeyRepository extends JpaRepository<DigitalKey, Long> {
+
+    DigitalKey findByQrCode(String qrCode);
 }
