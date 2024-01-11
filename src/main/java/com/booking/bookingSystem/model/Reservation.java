@@ -23,7 +23,8 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "client_id")
     private Client client;
 
     @OneToMany(mappedBy = "reservation")

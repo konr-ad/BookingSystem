@@ -36,7 +36,6 @@ public class Client {
 
     private String preferredPaymentMethod;
 
-    @OneToOne
-    @JoinColumn(name = "reservation_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "client")
     private Reservation reservation;
 }
