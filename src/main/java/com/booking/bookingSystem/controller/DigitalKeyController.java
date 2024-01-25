@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -44,6 +42,14 @@ public class DigitalKeyController {
 
         EmailService emailService = new EmailService();
         emailService.sendEmailWithQRCode("odbiorca@example.com", "Testowy Kod QR", "Oto Twój kod QR:", qrFile.getAbsolutePath());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<?> validateQRCode(@RequestBody String decodedText) {
+        // Process the decodedText as needed
+        System.out.println("Received QR Code: " + decodedText);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
