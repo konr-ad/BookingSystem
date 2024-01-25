@@ -41,7 +41,7 @@ public class DigitalKeyController {
         File qrFile = qrCodeGenerator.saveImageToFile(qrImage, "tempQRCode.png", "png");
 
         EmailService emailService = new EmailService();
-        emailService.sendEmailWithQRCode("odbiorca@example.com", "Testowy Kod QR", "Oto Twój kod QR:", qrFile.getAbsolutePath());
+        emailService.sendEmailWithQRCode("konradk95@gmail.com", "Testowy Kod QR", "Oto Twój kod QR:", qrFile.getAbsolutePath());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
