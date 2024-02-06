@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
 
     Optional<Apartment>findById(Long id);
+    Optional<List<Apartment>>findByIds(List<Long> ids);
     Optional<List<Apartment>> findByLocation(String location);
     Optional<List<Apartment>> findByPricePerNightBetween(BigDecimal minPrice, BigDecimal maxPrice);
     Optional<List<Apartment>> findByNumberOfRooms(int numberOfRooms);
