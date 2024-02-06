@@ -7,22 +7,37 @@ import com.booking.bookingSystem.enums.ReservationStatus;
 import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.model.Reservation;
+import com.booking.bookingSystem.service.ApartmentService;
+import com.booking.bookingSystem.service.ReservationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class DtoUtils {
 
+    private final ApartmentService apartmentService;
+    private final ReservationService reservationService;
+
+    @Autowired
+    public DtoUtils(ApartmentService apartmentService, ReservationService reservationService) {
+        this.apartmentService = apartmentService;
+        this.reservationService = reservationService;
+    }
+
     public ReservationDto reservationToDto(Reservation reservation) {
         ReservationDto dto = new ReservationDto();
         dto.setId(reservation.getId());
-        dto.setApartmentId(reservation.getApartment().get(0).getId());
-        dto.setClientId(reservation.getClient().getId());
+        dto.setApartmentsDtoIds(reservation.getApartments().stream()
+                .map(Apartment::getId)
+                .collect(Collectors.toList()));
+        dto.setClientDtoId(reservation.getClient().getId());
         dto.setStartDate(reservation.getStartDate());
         dto.setEndDate(reservation.getEndDate());
-        dto.setReservationStatus(reservation.getReservationStatus().toString());
+        dto.setReservationDtoStatus(reservation.getReservationStatus().toString());
         dto.setModifiedDate(reservation.getModifiedDate());
         dto.setTotalPrice(reservation.getTotalPrice());
         dto.setNotes(reservation.getNotes());
@@ -37,23 +52,25 @@ public class DtoUtils {
         return dtos;
     }
 
-    public Reservation reservationDtoToEntity(ReservationDto dto, Apartment apartment, Client client) {
+    public Reservation reservationDtoToEntity(ReservationDto reservationDto, ClientDto clientDto) {
         Reservation reservation = new Reservation();
-        reservation.setId(dto.getId());
-        reservation.setClient(client);
-        reservation.setApartment((List<Apartment>) apartment);
-        reservation.setStartDate(dto.getStartDate());
-        reservation.setEndDate(dto.getEndDate());
-        reservation.setReservationStatus(ReservationStatus.valueOf(dto.getReservationStatus()));
-        reservation.setModifiedDate(dto.getModifiedDate());
-        reservation.setTotalPrice(dto.getTotalPrice());
+        reservation.setId(reservationDto.getId());
+        reservation.setClient(clientDtoToEntity(clientDto));
+        reservation.setApartments((reservationDto.getApartmentsDtoIds().stream()
+                .map(apartmentService::findApartmentById)
+                .collect(Collectors.toList())));
+        reservation.setStartDate(reservationDto.getStartDate());
+        reservation.setEndDate(reservationDto.getEndDate());
+        reservation.setReservationStatus(ReservationStatus.valueOf(reservationDto.getReservationDtoStatus()));
+        reservation.setModifiedDate(reservationDto.getModifiedDate());
+        reservation.setTotalPrice(reservationDto.getTotalPrice());
         return reservation;
     }
 
-    public List<Reservation> reservationDtoToEntity(List<ReservationDto> reservationsDto, Apartment apartment, Client client) {
+    public List<Reservation> reservationDtoToEntity(List<ReservationDto> reservationsDto, ClientDto clientDto) {
         List<Reservation> reservations = new ArrayList<>();
         for (ReservationDto dto : reservationsDto) {
-            reservations.add(reservationDtoToEntity(dto, apartment, client));
+            reservations.add(reservationDtoToEntity(dto, clientDto));
         }
         return reservations;
     }
@@ -61,27 +78,30 @@ public class DtoUtils {
     public Apartment apartmentDtoToEntity(ApartmentDto dto) {
         Apartment apartment = new Apartment();
         apartment.setId(dto.getId());
-        apartment.setName(dto.getName());
-        apartment.setDescription(dto.getDescription());
-        apartment.setAddress(dto.getAddress());
+        apartment.setNumber(dto.getNumber());
         apartment.setPricePerNight(dto.getPricePerNight());
-        apartment.setNumberOfRooms(dto.getNumberOfRooms());
+        apartment.setArea(dto.getArea());
         apartment.setCapacity(dto.getCapacity());
-        apartment.setLocation(dto.getLocation());
+        apartment.setReservation(reservationService.findReservationById(dto.getReservationId()));
         return apartment;
+    }
+
+    public List<Apartment> apartmentDtoToEntity(List<ApartmentDto> apartmentsDto) {
+        List<Apartment> apartments = new ArrayList<>();
+        for (ApartmentDto dto : apartmentsDto) {
+            apartments.add((apartmentDtoToEntity(dto)));
+        }
+        return apartments;
     }
 
 
     public ApartmentDto apartmentToDto(Apartment apartment) {
         ApartmentDto dto = new ApartmentDto();
         dto.setId(apartment.getId());
-        dto.setName(apartment.getName());
-        dto.setDescription(apartment.getDescription());
-        dto.setAddress(apartment.getAddress());
+        dto.setNumber(apartment.getNumber());
         dto.setPricePerNight(apartment.getPricePerNight());
-        dto.setNumberOfRooms(apartment.getNumberOfRooms());
+        dto.setArea(apartment.getArea());
         dto.setCapacity(apartment.getCapacity());
-        dto.setLocation(apartment.getLocation());
         return dto;
     }
 
@@ -104,7 +124,13 @@ public class DtoUtils {
         dto.setPreferredPaymentMethod(client.getPreferredPaymentMethod());
         return dto;
     }
-
+    public List<ClientDto> clientDToDto(List<Client> clients) {
+        List<ClientDto> dtos = new ArrayList<>();
+        for (Client client : clients) {
+            dtos.add(clientToDto(client));
+        }
+        return dtos;
+    }
     public Client clientDtoToEntity(ClientDto dto) {
         Client client = new Client();
         client.setId(dto.getId());
