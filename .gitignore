@@ -34,3 +34,4 @@ build/
 /myapp.log
 /myapp.log.2023-09-11.0.gz
 /myapp.log.2023-09-15.0.gz
+/logs/
