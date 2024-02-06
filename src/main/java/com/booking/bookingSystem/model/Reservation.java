@@ -28,7 +28,7 @@ public class Reservation {
     private Client client;
 
     @OneToMany(mappedBy = "reservation")
-    private List<Apartment> apartment;
+    private List<Apartment> apartments;
     @NotNull
     @Column(name = "start_date")
     private LocalDate startDate;
