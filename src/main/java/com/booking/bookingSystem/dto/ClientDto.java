@@ -1,5 +1,6 @@
 package com.booking.bookingSystem.dto;
 
+import com.booking.bookingSystem.model.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,4 +38,6 @@ public class ClientDto {
     private LocalDate dateOfBirth;
 
     private String preferredPaymentMethod;
+
+    private Long reservationDtoId;
 }

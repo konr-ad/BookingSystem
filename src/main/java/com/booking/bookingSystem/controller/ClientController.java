@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/clients")
@@ -29,6 +30,12 @@ public class ClientController {
     public ResponseEntity<ClientDto> getClient(@PathVariable Long id) {
         ClientDto clientDto = clientService.findClientDtoById(id);
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<ClientDto>> getAllClients() {
+        List<ClientDto> listOfClientsDto = clientService.findAll();
+        return new ResponseEntity<>(listOfClientsDto, HttpStatus.OK);
     }
 
     @PostMapping
