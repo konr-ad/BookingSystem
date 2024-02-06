@@ -1,5 +1,6 @@
 package com.booking.bookingSystem.service;
 
+import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.DigitalKey;
 import com.booking.bookingSystem.model.Reservation;
 import com.booking.bookingSystem.qrCode.QrCodeGenerator;
@@ -22,17 +23,19 @@ public class DigitalKeyService {
         this.qrCodeGenerator = qrCodeGenerator;
     }
 
-    public BufferedImage generateTestQRCode() throws Exception {
-        String qrCodeData = "http://example.com";
-        return QrCodeGenerator.generateTestQRCodeImage(qrCodeData);
+    public DigitalKey storeQRCode(String encodedText) {
+        DigitalKey qrCode = new DigitalKey();
+        qrCode.setEncodedText(encodedText);
+        return digitalKeyRepository.save(qrCode);
     }
 
-    public DigitalKey createAndSaveDigitalKey(String qrCode, LocalDateTime validFrom, LocalDateTime validUntil, Reservation reservation) {
-        DigitalKey digitalKey = new DigitalKey();
-        digitalKey.setQrCode(qrCode);
-        digitalKey.setValidFrom(validFrom);
-        digitalKey.setValidUntil(validUntil);
-        digitalKey.setReservation(reservation);
-        return digitalKeyRepository.save(digitalKey);
+    public DigitalKey findById(Long qrCodeId) {
+        return digitalKeyRepository.findById(qrCodeId)
+                .orElseThrow(() -> new EntityNotFoundException("QR Code not found"));
+    }
+
+    public DigitalKey findByEncodedText(String encodedText) {
+        return digitalKeyRepository.findByEncodedText(encodedText)
+                .orElseThrow(() -> new EntityNotFoundException("QR Code not found"));
     }
 }

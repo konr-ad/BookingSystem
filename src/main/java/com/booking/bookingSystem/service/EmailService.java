@@ -1,59 +1,64 @@
 package com.booking.bookingSystem.service;
 
+import org.springframework.stereotype.Service;
 import javax.mail.*;
 import javax.mail.internet.*;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.util.Properties;
+import javax.imageio.ImageIO;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
 
+@Service
 public class EmailService {
 
-    public void sendEmailWithQRCode(String to, String subject, String body, String qrCodeImage) throws MessagingException, IOException {
-        // Konfiguracja właściwości serwera SMTP
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
+    private Session getEmailSession() {
+        Properties props = new Properties();
+        // Set properties for your email server. Example for Gmail:
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.user", "konradtestowy92@gmail.com");
+        props.put("mail.smtp.password",  "lrcc bgvm jkzt ssxh ");
 
-        // Dane uwierzytelniające konta Gmail
-        final String myAccountEmail = "konradtestowy92@gmail.com";
-        final String password = "Co0inerbla";
-
-
-        Session session = Session.getInstance(properties, new Authenticator() {
-            @Override
+        return Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(myAccountEmail, password);
+                return new PasswordAuthentication(props.getProperty("mail.smtp.user"), props.getProperty("mail.smtp.password"));
             }
         });
-
-        // Utwórz wiadomość e-mail
-        Message message = prepareMessage(session, myAccountEmail, to, subject, body, qrCodeImage);
-
-        // Wyślij wiadomość
-        Transport.send(message);
-        System.out.println("Wiadomość wysłana pomyślnie");
     }
 
-    private Message prepareMessage(Session session, String myAccountEmail, String to, String subject, String body, String qrCodeImage) throws MessagingException, IOException {
+    public void sendEmailWithQRCode(String to, String subject, String text, BufferedImage qrImage) throws Exception {
+        Session session = getEmailSession();
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(myAccountEmail));
-        message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+        message.setFrom(new InternetAddress("your-email@gmail.com"));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
         message.setSubject(subject);
 
-        // Utwórz treść e-maila z załącznikiem
-        MimeBodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setContent(body, "text/html");
-
-        MimeBodyPart qrCodeAttachment = new MimeBodyPart();
-        qrCodeAttachment.attachFile(qrCodeImage); // plik z obrazem kodu QR
-
+        // Create a multipart message for attachment
         Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(messageBodyPart);
-        multipart.addBodyPart(qrCodeAttachment);
 
+        // Create the message part
+        BodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setText(text);
+        multipart.addBodyPart(messageBodyPart);
+
+        // Add QR Code as an attachment
+        messageBodyPart = new MimeBodyPart();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(qrImage, "png", baos);
+        DataSource source = new ByteArrayDataSource(baos.toByteArray(), "image/png");
+        messageBodyPart.setDataHandler(new DataHandler(source));
+        messageBodyPart.setFileName("QRCode.png");
+        multipart.addBodyPart(messageBodyPart);
+
+        // Send the complete message parts
         message.setContent(multipart);
 
-        return message;
+        // Send message
+        Transport.send(message);
     }
 }

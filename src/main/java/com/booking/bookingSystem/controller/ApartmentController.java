@@ -30,20 +30,10 @@ public class ApartmentController {
         return new ResponseEntity<>(apartmentDto, HttpStatus.OK);
     }
 
-    @GetMapping("/byname")
-    public ResponseEntity<?> getApartmentByName(@Valid @RequestParam String name, BindingResult bindingResult) {
-        ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
-        if (errorMap != null) return errorMap;
-        ApartmentDto apartmentDto = apartmentService.findbyName(name);
-        return new ResponseEntity<>(apartmentDto, HttpStatus.OK);
-    }
-
-    @GetMapping("/bylocation")
-    public ResponseEntity<?> getApartmentByLocation(@Valid @RequestParam String location, BindingResult bindingResult) {
-        ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
-        if (errorMap != null) return errorMap;
-        List<ApartmentDto> apartmentsDto = apartmentService.findbyLocation(location);
-        return new ResponseEntity<>(apartmentsDto, HttpStatus.OK);
+    @GetMapping()
+    public ResponseEntity<List<ApartmentDto>> getAllApartments() {
+        List<ApartmentDto> listOfApartmentsDto = apartmentService.findAll();
+        return new ResponseEntity<>(listOfApartmentsDto, HttpStatus.OK);
     }
 
     @PostMapping

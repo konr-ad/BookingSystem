@@ -11,6 +11,7 @@ import javax.validation.constraints.PastOrPresent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,11 +20,11 @@ public class ReservationDto {
 
     private Long id;
 
-    @NotNull(message = "Client ID cannot be null")
-    private Long clientId;
+    @NotNull(message = "Client cannot be null")
+    private Long clientDtoId;
 
-    @NotNull(message = "Apartment ID cannot be null")
-    private Long apartmentId;
+    @NotNull(message = "Apartment can not be empty")
+    private List<Long> apartmentsDtoIds;
 
     @NotNull(message = "Start date is required")
     @FutureOrPresent(message = "Start date must be in the present or future")
@@ -34,7 +35,7 @@ public class ReservationDto {
     private LocalDate endDate;
 
     @NotNull(message = "Reservation status is required")
-    private String reservationStatus;
+    private String reservationDtoStatus;
 
     private LocalDateTime modifiedDate;
 

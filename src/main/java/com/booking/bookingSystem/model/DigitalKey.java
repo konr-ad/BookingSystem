@@ -20,8 +20,8 @@ public class DigitalKey {
     private Long id;
 
     @NotNull
-    @Column(name = "qr_code")
-    private String qrCode;
+    @Column(name = "encoded_Text")
+    private String encodedText;
 
     @NotNull
     @Column(name = "valid_from")

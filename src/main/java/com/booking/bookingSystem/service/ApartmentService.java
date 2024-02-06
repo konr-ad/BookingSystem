@@ -3,6 +3,7 @@ package com.booking.bookingSystem.service;
 import com.booking.bookingSystem.dto.ApartmentDto;
 import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.Apartment;
+import com.booking.bookingSystem.model.Reservation;
 import com.booking.bookingSystem.repository.ApartmentRepository;
 import com.booking.bookingSystem.utils.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,13 @@ public class ApartmentService {
 
     private final ApartmentRepository apartmentRepository;
     private final DtoUtils dtoUtils;
+    private final ReservationService reservationService;
 
     @Autowired
-    public ApartmentService(ApartmentRepository apartmentRepository, DtoUtils dtoUtils) {
+    public ApartmentService(ApartmentRepository apartmentRepository, DtoUtils dtoUtils, ReservationService reservationService) {
         this.apartmentRepository = apartmentRepository;
         this.dtoUtils = dtoUtils;
+        this.reservationService = reservationService;
     }
 
     public Apartment findApartmentById(Long id) {
@@ -77,11 +80,21 @@ public class ApartmentService {
     }
 
     private void updateApartmentFields(Apartment apartment, ApartmentDto dto) {
-        apartment.setName(dto.getName());
-        apartment.setDescription(dto.getDescription());
-        apartment.setAddress(dto.getAddress());
+        apartment.setId(dto.getId());
+        apartment.setNumber(dto.getNumber());
         apartment.setPricePerNight(dto.getPricePerNight());
-        apartment.setNumberOfRooms(dto.getNumberOfRooms());
-        apartment.setLocation(dto.getLocation());
+        apartment.setArea(dto.getArea());
+        apartment.setCapacity(dto.getCapacity());
+        if (apartment.getReservation() != null) {
+            Reservation reservation = reservationService.findReservationById(dto.getId());
+            apartment.setReservation(reservation);
+        } else {
+            apartment.setReservation(null);
+        }
+    }
+
+    public List<ApartmentDto> findAll() {
+        List<Apartment> listofApartments = apartmentRepository.findAll();
+        return dtoUtils.apartmentToDto(listofApartments);
     }
 }

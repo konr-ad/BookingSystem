@@ -70,4 +70,8 @@ public class ClientService {
         client.setPhoneNumber(dto.getPhoneNumber());
     }
 
+    public List<ClientDto> findAll() {
+        List<Client> clients = clientRepository.findAll();
+        return dtoUtils.clientDToDto(clients);
+    }
 }

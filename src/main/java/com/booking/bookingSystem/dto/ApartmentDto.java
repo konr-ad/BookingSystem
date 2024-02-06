@@ -1,5 +1,6 @@
 package com.booking.bookingSystem.dto;
 
+import com.booking.bookingSystem.model.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,26 +18,20 @@ public class ApartmentDto {
 
     private Long id;
 
-    @NotBlank(message = "Name cannot be blank")
-    private String name;
-
-    private String description;
-
-    @NotBlank(message = "Address cannot be blank")
-    private String address;
+    @NotBlank(message = "Number cannot be blank")
+    private String number;
 
     @NotNull(message = "Price per night cannot be null")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price per night must be greater than 0")
     private BigDecimal pricePerNight;
 
-    @NotNull(message = "Number of rooms cannot be null")
-    @Min(value = 1, message = "Number of rooms must be at least 1")
-    private int numberOfRooms;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Area must be greater than 0")
+    @NotNull
+    private String area;
 
     @NotNull(message = "Capacity cannot be null")
     @Min(value = 1, message = "Capacity must be at least 1")
     private int capacity;
 
-    @NotBlank(message = "Location cannot be blank")
-    private String location;
+    private Long reservationId;
 }

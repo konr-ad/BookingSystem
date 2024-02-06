@@ -18,25 +18,18 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "apartment")
 public class Apartment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    private String name;
-    private String description;
-    @NotNull
-    private String address;
+    private String number;
     @NotNull
     private BigDecimal pricePerNight;
     @NotNull
-    private int numberOfRooms;
+    private String area;
     @NotNull
     private int capacity;
-    @NotNull
-    private String location;
     @ManyToOne
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
-
 }
