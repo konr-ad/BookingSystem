@@ -38,11 +38,11 @@ public class ReservationController {
         return new ResponseEntity<>(createdReservationDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateReservation(@PathVariable Long id, @Valid @RequestBody ReservationDto reservationDto, BindingResult bindingResult) {
+    @PutMapping
+    public ResponseEntity<?> updateReservation(@Valid @RequestBody ReservationDto reservationDto, BindingResult bindingResult) {
         ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
         if (errorMap != null) return errorMap;
-        ReservationDto updatedReservationDto = reservationService.updateReservation(id, reservationDto);
+        ReservationDto updatedReservationDto = reservationService.updateReservation(reservationDto);
         return new ResponseEntity<>(updatedReservationDto, HttpStatus.OK);
     }
 

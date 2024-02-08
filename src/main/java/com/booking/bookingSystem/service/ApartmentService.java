@@ -17,13 +17,11 @@ import java.util.Optional;
 public class ApartmentService {
 
     private final ApartmentRepository apartmentRepository;
-    private final DtoUtils dtoUtils;
     private final ReservationService reservationService;
 
     @Autowired
-    public ApartmentService(ApartmentRepository apartmentRepository, DtoUtils dtoUtils, ReservationService reservationService) {
+    public ApartmentService(ApartmentRepository apartmentRepository, ReservationService reservationService) {
         this.apartmentRepository = apartmentRepository;
-        this.dtoUtils = dtoUtils;
         this.reservationService = reservationService;
     }
 
@@ -34,31 +32,19 @@ public class ApartmentService {
 
     public ApartmentDto findApartmentDtoById(Long id) {
         Apartment apartment = findApartmentById(id);
-        return dtoUtils.apartmentToDto(apartment);
-    }
-
-    public List<ApartmentDto> findbyLocation(String location) {
-        List<Apartment> apartmentsDto = apartmentRepository.findByLocation(location)
-                .orElseThrow(() -> new EntityNotFoundException("Apartments at location: " + location + " not found"));
-        return dtoUtils.apartmentToDto(apartmentsDto);
+        return DtoUtils.apartmentToDto(apartment);
     }
 
     public List<ApartmentDto> findByPricePerNightBetween(BigDecimal min, BigDecimal max) {
         Optional<List<Apartment>> apartments = apartmentRepository.findByPricePerNightBetween(min, max);
-        if (apartments.isPresent()) return dtoUtils.apartmentToDto(apartments.get());
+        if (apartments.isPresent()) return DtoUtils.apartmentToDto(apartments.get());
         throw new EntityNotFoundException("No apartments found between  price range of" + min + " - " + max);
     }
 
-    public List<ApartmentDto> findByNumberOfRooms(int numberOfRooms) {
-        Optional<List<Apartment>> apartments = apartmentRepository.findByNumberOfRooms(numberOfRooms);
-        if (apartments.isPresent()) return dtoUtils.apartmentToDto(apartments.get());
-        throw new EntityNotFoundException("No apartments found with " + numberOfRooms + " rooms");
-    }
-
     public ApartmentDto save(ApartmentDto apartmentDto) {
-        Apartment apartmentToSave = dtoUtils.apartmentDtoToEntity(apartmentDto);
+        Apartment apartmentToSave = DtoUtils.apartmentDtoToEntity(apartmentDto, reservationService);
         apartmentRepository.save(apartmentToSave);
-        return dtoUtils.apartmentToDto(apartmentToSave);
+        return DtoUtils.apartmentToDto(apartmentToSave);
     }
 
     public void deleteById(Long id) {
@@ -66,17 +52,11 @@ public class ApartmentService {
         apartmentRepository.deleteById(id);
     }
 
-    public ApartmentDto findbyName(String name) {
-        Apartment apartment = apartmentRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException("Apartment with name: " + name + " not found"));
-        return dtoUtils.apartmentToDto(apartment);
-    }
-
-    public ApartmentDto update(Long id, ApartmentDto dto) {
-        Apartment existingApartment = findApartmentById(id);
+    public ApartmentDto update(ApartmentDto dto) {
+        Apartment existingApartment = findApartmentById(dto.getId());
         updateApartmentFields(existingApartment, dto);
         Apartment savedApartment = apartmentRepository.save(existingApartment);
-        return dtoUtils.apartmentToDto(savedApartment);
+        return DtoUtils.apartmentToDto(savedApartment);
     }
 
     private void updateApartmentFields(Apartment apartment, ApartmentDto dto) {
@@ -94,7 +74,7 @@ public class ApartmentService {
     }
 
     public List<ApartmentDto> findAll() {
-        List<Apartment> listofApartments = apartmentRepository.findAll();
-        return dtoUtils.apartmentToDto(listofApartments);
+        List<Apartment> listOfApartments = apartmentRepository.findAll();
+        return DtoUtils.apartmentToDto(listOfApartments);
     }
 }

@@ -44,11 +44,11 @@ public class ApartmentController {
         return new ResponseEntity<>(createdApartmentDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateApartment(@PathVariable Long id, @Valid @RequestBody ApartmentDto apartmentDto, BindingResult result) {
+    @PutMapping
+    public ResponseEntity<?> updateApartment(@Valid @RequestBody ApartmentDto apartmentDto, BindingResult result) {
         ResponseEntity<?> errorMap = validationUtils.getResponseEntity(result);
         if (errorMap != null) return errorMap;
-        ApartmentDto updatedApartmentDto = apartmentService.update(id, apartmentDto);
+        ApartmentDto updatedApartmentDto = apartmentService.update(apartmentDto);
         return new ResponseEntity<>(updatedApartmentDto, HttpStatus.OK);
     }
 

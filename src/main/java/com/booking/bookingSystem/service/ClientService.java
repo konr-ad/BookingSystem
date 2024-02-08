@@ -15,12 +15,10 @@ import java.util.Optional;
 public class ClientService {
 
     private final ClientRepository clientRepository;
-    private final DtoUtils dtoUtils;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository, DtoUtils dtoUtils) {
+    public ClientService(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
-        this.dtoUtils = dtoUtils;
     }
 
     public Client findClientById(Long id) {
@@ -30,7 +28,7 @@ public class ClientService {
 
     public ClientDto findClientDtoById(Long id) {
         Client client = findClientById(id);
-        return dtoUtils.clientToDto(client);
+        return DtoUtils.clientToDto(client);
     }
 
     public Optional<Client> findByEmail(String email) {
@@ -53,17 +51,17 @@ public class ClientService {
         clientRepository.deleteById(id);
     }
 
-    public ClientDto updateClient(Long id, ClientDto clientDto) {
-        Client existingClient = findClientById(id);
+    public ClientDto updateClient(ClientDto clientDto) {
+        Client existingClient = findClientById(clientDto.getId());
         updateClientFields(existingClient, clientDto);
         Client savedCLient = save(existingClient);
-        return dtoUtils.clientToDto(savedCLient);
+        return DtoUtils.clientToDto(savedCLient);
     }
 
     public ClientDto createClient(ClientDto clientDto) {
-        Client client = dtoUtils.clientDtoToEntity(clientDto);
+        Client client = DtoUtils.clientDtoToEntity(clientDto);
         Client savedClient = clientRepository.save(client);
-        return dtoUtils.clientToDto(savedClient);
+        return DtoUtils.clientToDto(savedClient);
     }
     private void updateClientFields(Client client, ClientDto dto) {
         client.setEmail(dto.getEmail());
@@ -72,6 +70,6 @@ public class ClientService {
 
     public List<ClientDto> findAll() {
         List<Client> clients = clientRepository.findAll();
-        return dtoUtils.clientDToDto(clients);
+        return DtoUtils.clientDToDto(clients);
     }
 }

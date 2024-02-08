@@ -7,7 +7,10 @@ import com.booking.bookingSystem.enums.ReservationStatus;
 import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.model.Reservation;
+import com.booking.bookingSystem.repository.ApartmentRepository;
+import com.booking.bookingSystem.repository.ClientRepository;
 import com.booking.bookingSystem.service.ApartmentService;
+import com.booking.bookingSystem.service.ClientService;
 import com.booking.bookingSystem.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,16 +22,7 @@ import java.util.stream.Collectors;
 @Component
 public class DtoUtils {
 
-    private final ApartmentService apartmentService;
-    private final ReservationService reservationService;
-
-    @Autowired
-    public DtoUtils(ApartmentService apartmentService, ReservationService reservationService) {
-        this.apartmentService = apartmentService;
-        this.reservationService = reservationService;
-    }
-
-    public ReservationDto reservationToDto(Reservation reservation) {
+    public static ReservationDto reservationToDto(Reservation reservation) {
         ReservationDto dto = new ReservationDto();
         dto.setId(reservation.getId());
         dto.setApartmentsDtoIds(reservation.getApartments().stream()
@@ -44,7 +38,7 @@ public class DtoUtils {
         return dto;
     }
 
-    public List<ReservationDto> reservationToDto(List<Reservation> reservations) {
+    public static List<ReservationDto> reservationToDto(List<Reservation> reservations) {
         List<ReservationDto> dtos = new ArrayList<>();
         for (Reservation reservation : reservations) {
             dtos.add(reservationToDto(reservation));
@@ -52,30 +46,31 @@ public class DtoUtils {
         return dtos;
     }
 
-    public Reservation reservationDtoToEntity(ReservationDto reservationDto, ClientDto clientDto) {
-        Reservation reservation = new Reservation();
-        reservation.setId(reservationDto.getId());
-        reservation.setClient(clientDtoToEntity(clientDto));
-        reservation.setApartments((reservationDto.getApartmentsDtoIds().stream()
-                .map(apartmentService::findApartmentById)
-                .collect(Collectors.toList())));
-        reservation.setStartDate(reservationDto.getStartDate());
-        reservation.setEndDate(reservationDto.getEndDate());
-        reservation.setReservationStatus(ReservationStatus.valueOf(reservationDto.getReservationDtoStatus()));
-        reservation.setModifiedDate(reservationDto.getModifiedDate());
-        reservation.setTotalPrice(reservationDto.getTotalPrice());
-        return reservation;
-    }
+//    public static Reservation reservationDtoToEntity(ReservationDto reservationDto, ApartmentRepository apartmentRepository, ClientRepository clientRepository) {
+//        Reservation reservation = new Reservation();
+//        Client client = clientRepository.findById(reservationDto.getClientDtoId());
+//        reservation.setId(reservationDto.getId());
+//        reservation.setClient(client);
+//        reservation.setApartments((reservationDto.getApartmentsDtoIds().stream()
+//                .map(apartmentService::findApartmentById)
+//                .collect(Collectors.toList())));
+//        reservation.setStartDate(reservationDto.getStartDate());
+//        reservation.setEndDate(reservationDto.getEndDate());
+//        reservation.setReservationStatus(ReservationStatus.valueOf(reservationDto.getReservationDtoStatus()));
+//        reservation.setModifiedDate(reservationDto.getModifiedDate());
+//        reservation.setTotalPrice(reservationDto.getTotalPrice());
+//        return reservation;
+//    }
+//
+//    public static List<Reservation> reservationDtoToEntity(List<ReservationDto> reservationsDto, ApartmentService apartmentService, ClientService clientService) {
+//        List<Reservation> reservations = new ArrayList<>();
+//        for (ReservationDto dto : reservationsDto) {
+//            reservations.add(reservationDtoToEntity(dto, apartmentService, clientService));
+//        }
+//        return reservations;
+//    }
 
-    public List<Reservation> reservationDtoToEntity(List<ReservationDto> reservationsDto, ClientDto clientDto) {
-        List<Reservation> reservations = new ArrayList<>();
-        for (ReservationDto dto : reservationsDto) {
-            reservations.add(reservationDtoToEntity(dto, clientDto));
-        }
-        return reservations;
-    }
-
-    public Apartment apartmentDtoToEntity(ApartmentDto dto) {
+    public static Apartment apartmentDtoToEntity(ApartmentDto dto, ReservationService reservationService) {
         Apartment apartment = new Apartment();
         apartment.setId(dto.getId());
         apartment.setNumber(dto.getNumber());
@@ -86,16 +81,16 @@ public class DtoUtils {
         return apartment;
     }
 
-    public List<Apartment> apartmentDtoToEntity(List<ApartmentDto> apartmentsDto) {
+    public static List<Apartment> apartmentDtoToEntity(List<ApartmentDto> apartmentsDto, ReservationService reservationService) {
         List<Apartment> apartments = new ArrayList<>();
         for (ApartmentDto dto : apartmentsDto) {
-            apartments.add((apartmentDtoToEntity(dto)));
+            apartments.add((apartmentDtoToEntity(dto, reservationService)));
         }
         return apartments;
     }
 
 
-    public ApartmentDto apartmentToDto(Apartment apartment) {
+    public static ApartmentDto apartmentToDto(Apartment apartment) {
         ApartmentDto dto = new ApartmentDto();
         dto.setId(apartment.getId());
         dto.setNumber(apartment.getNumber());
@@ -105,7 +100,7 @@ public class DtoUtils {
         return dto;
     }
 
-    public List<ApartmentDto> apartmentToDto(List<Apartment> apartments) {
+    public static List<ApartmentDto> apartmentToDto(List<Apartment> apartments) {
         List<ApartmentDto> dtos = new ArrayList<>();
         for (Apartment apartment : apartments) {
             dtos.add(apartmentToDto(apartment));
@@ -113,7 +108,7 @@ public class DtoUtils {
         return dtos;
     }
 
-    public ClientDto clientToDto(Client client) {
+    public static ClientDto clientToDto(Client client) {
         ClientDto dto = new ClientDto();
         dto.setId(client.getId());
         dto.setFirstName(client.getFirstName());
@@ -124,14 +119,14 @@ public class DtoUtils {
         dto.setPreferredPaymentMethod(client.getPreferredPaymentMethod());
         return dto;
     }
-    public List<ClientDto> clientDToDto(List<Client> clients) {
+    public static List<ClientDto> clientDToDto(List<Client> clients) {
         List<ClientDto> dtos = new ArrayList<>();
         for (Client client : clients) {
             dtos.add(clientToDto(client));
         }
         return dtos;
     }
-    public Client clientDtoToEntity(ClientDto dto) {
+    public static Client clientDtoToEntity(ClientDto dto) {
         Client client = new Client();
         client.setId(dto.getId());
         client.setFirstName(dto.getFirstName());

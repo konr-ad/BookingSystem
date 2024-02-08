@@ -16,13 +16,12 @@ public class EmailService {
 
     private Session getEmailSession() {
         Properties props = new Properties();
-        // Set properties for your email server. Example for Gmail:
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.user", "konradtestowy92@gmail.com");
-        props.put("mail.smtp.password",  "lrcc bgvm jkzt ssxh ");
+        props.put("mail.smtp.user", System.getenv("EMAIL_USER"));
+        props.put("mail.smtp.password",  System.getenv("EMAIL_PASSWORD"));
 
         return Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {

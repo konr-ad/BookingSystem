@@ -8,7 +8,6 @@ import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.model.Reservation;
 import com.booking.bookingSystem.qrCode.QrCodeGenerator;
 import com.booking.bookingSystem.repository.ApartmentRepository;
-import com.booking.bookingSystem.repository.ClientRepository;
 import com.booking.bookingSystem.repository.DigitalKeyRepository;
 import com.booking.bookingSystem.repository.ReservationRepository;
 import com.booking.bookingSystem.utils.DtoUtils;
@@ -23,17 +22,15 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final ApartmentRepository apartmentRepository;
-    private final ClientRepository clientRepository;
+    private final RentalManagementService rentalManagementService;
     private final DigitalKeyRepository digitalKeyRepository;
-    private final DtoUtils dtoUtils;
     private final QrCodeGenerator qrCodeGenerator;
 
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository, ApartmentRepository apartmentRepository, ClientRepository clientRepository, DtoUtils dtoUtils, DigitalKeyRepository digitalKeyRepository, QrCodeGenerator qrCodeGenerator) {
+    public ReservationService(ReservationRepository reservationRepository, ApartmentRepository apartmentRepository, DigitalKeyRepository digitalKeyRepository, QrCodeGenerator qrCodeGenerator, RentalManagementService rentalManagementService) {
         this.reservationRepository = reservationRepository;
         this.apartmentRepository = apartmentRepository;
-        this.clientRepository = clientRepository;
-        this.dtoUtils = dtoUtils;
+        this.rentalManagementService = rentalManagementService;
         this.digitalKeyRepository = digitalKeyRepository;
         this.qrCodeGenerator = qrCodeGenerator;
     }
@@ -43,18 +40,18 @@ public class ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException("Reservation with id: " + id + " not found"));
     }
 
+    public List<Reservation> findReservationsById(List<Long> ids) {
+        return reservationRepository.findAllById(ids);
+    }
+
     public ReservationDto findReservationDtoById(Long id) {
         Reservation reservation = findReservationById(id);
-        return dtoUtils.reservationToDto(reservation);
+        return DtoUtils.reservationToDto(reservation);
     }
 
     @Transactional
-    public ReservationDto createReservation(ReservationDto reservationDto) throws Exception {
-        Client client = clientRepository.findById(reservationDto.getClientDtoId())
-                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
-        Reservation reservation = dtoUtils.reservationDtoToEntity(reservationDto, dtoUtils.clientToDto(client));
-        Reservation savedReservation = reservationRepository.save(reservation);
-        return dtoUtils.reservationToDto(savedReservation);
+    public ReservationDto createReservation(ReservationDto reservationDto) {
+        return rentalManagementService.createReservation(reservationDto);
     }
 
     public List<Reservation> findByClient(Client client) {
@@ -70,20 +67,9 @@ public class ReservationService {
         reservationRepository.deleteById(id);
     }
 
-    public ReservationDto updateReservation(Long id, ReservationDto dto) {
-        Reservation existingReservation = findReservationById(id);
-        updateReservationFields(existingReservation, dto);
-        Reservation updatedReservation = save(existingReservation);
-        return dtoUtils.reservationToDto(updatedReservation);
-    }
-
-    private void updateReservationFields(Reservation existingReservation, ReservationDto dto) {
-        List<Apartment> apartments = apartmentRepository.findByIds(dto.getApartmentsDtoIds())
-                .orElseThrow(() -> new EntityNotFoundException("Apartment not found"));
-        existingReservation.setApartments(apartments);
-        existingReservation.setNotes(dto.getNotes());
-        existingReservation.setReservationStatus(ReservationStatus.valueOf(dto.getReservationDtoStatus()));
-        existingReservation.setEndDate(dto.getEndDate());
-        existingReservation.setTotalPrice(dto.getTotalPrice());
+    public ReservationDto updateReservation(ReservationDto dto) {
+        Reservation existingReservation = findReservationById(dto.getId());
+        Reservation updatedReservation = rentalManagementService.updateReservationFields(existingReservation, dto);
+        return DtoUtils.reservationToDto(updatedReservation);
     }
 }
