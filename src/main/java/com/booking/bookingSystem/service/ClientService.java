@@ -51,8 +51,8 @@ public class ClientService {
         clientRepository.deleteById(id);
     }
 
-    public ClientDto updateClient(ClientDto clientDto) {
-        Client existingClient = findClientById(clientDto.getId());
+    public ClientDto updateClient(Long id, ClientDto clientDto) {
+        Client existingClient = findClientById(id);
         updateClientFields(existingClient, clientDto);
         Client savedCLient = save(existingClient);
         return DtoUtils.clientToDto(savedCLient);
@@ -64,8 +64,16 @@ public class ClientService {
         return DtoUtils.clientToDto(savedClient);
     }
     private void updateClientFields(Client client, ClientDto dto) {
+        client.setFirstName(dto.getFirstName());
+        client.setLastName(dto.getLastName());
         client.setEmail(dto.getEmail());
         client.setPhoneNumber(dto.getPhoneNumber());
+        client.setPreferredPaymentMethod(dto.getPreferredPaymentMethod());
+        client.setDateOfBirth(dto.getDateOfBirth());
+//        if (dto.getReservationDtoId() != null) {
+//
+//            client.setReservation(dto.getReservationDtoId());
+//        }
     }
 
     public List<ClientDto> findAll() {

@@ -77,4 +77,8 @@ public class ApartmentService {
         List<Apartment> listOfApartments = apartmentRepository.findAll();
         return DtoUtils.apartmentToDto(listOfApartments);
     }
+
+    public List<ApartmentDto> search(String search) {
+        return DtoUtils.apartmentToDto(apartmentRepository.findByAttributeContaining(search));
+    }
 }

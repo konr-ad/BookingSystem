@@ -46,11 +46,11 @@ public class ClientController {
         return new ResponseEntity<>(createdClient, HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateClient(@RequestBody ClientDto clientDto, BindingResult bindingResult) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateClient(@PathVariable Long id, @RequestBody ClientDto clientDto, BindingResult bindingResult) {
         ResponseEntity<?> errorMap = validationUtils.getResponseEntity(bindingResult);
         if (errorMap != null) return errorMap;
-        ClientDto updatedClientDto = clientService.updateClient(clientDto);
+        ClientDto updatedClientDto = clientService.updateClient(id, clientDto);
         return new ResponseEntity<>(updatedClientDto, HttpStatus.OK);
     }
 
