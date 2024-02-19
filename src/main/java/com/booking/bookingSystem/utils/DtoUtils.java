@@ -4,6 +4,7 @@ import com.booking.bookingSystem.dto.ApartmentDto;
 import com.booking.bookingSystem.dto.ClientDto;
 import com.booking.bookingSystem.dto.ReservationDto;
 import com.booking.bookingSystem.enums.ReservationStatus;
+import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.model.Reservation;
@@ -46,29 +47,29 @@ public class DtoUtils {
         return dtos;
     }
 
-//    public static Reservation reservationDtoToEntity(ReservationDto reservationDto, ApartmentRepository apartmentRepository, ClientRepository clientRepository) {
-//        Reservation reservation = new Reservation();
-//        Client client = clientRepository.findById(reservationDto.getClientDtoId());
-//        reservation.setId(reservationDto.getId());
-//        reservation.setClient(client);
-//        reservation.setApartments((reservationDto.getApartmentsDtoIds().stream()
-//                .map(apartmentService::findApartmentById)
-//                .collect(Collectors.toList())));
-//        reservation.setStartDate(reservationDto.getStartDate());
-//        reservation.setEndDate(reservationDto.getEndDate());
-//        reservation.setReservationStatus(ReservationStatus.valueOf(reservationDto.getReservationDtoStatus()));
-//        reservation.setModifiedDate(reservationDto.getModifiedDate());
-//        reservation.setTotalPrice(reservationDto.getTotalPrice());
-//        return reservation;
-//    }
-//
-//    public static List<Reservation> reservationDtoToEntity(List<ReservationDto> reservationsDto, ApartmentService apartmentService, ClientService clientService) {
-//        List<Reservation> reservations = new ArrayList<>();
-//        for (ReservationDto dto : reservationsDto) {
-//            reservations.add(reservationDtoToEntity(dto, apartmentService, clientService));
-//        }
-//        return reservations;
-//    }
+    public Reservation reservationDtoToEntity(ReservationDto reservationDto, ClientRepository clientRepository, ApartmentRepository apartmentRepository) {
+        Reservation reservation = new Reservation();
+        Client client = clientRepository.findById(reservationDto.getClientDtoId())
+                .orElseThrow(() -> new EntityNotFoundException("Client not found for ID: " + reservationDto.getClientDtoId()));
+        List<Apartment> apartments = apartmentRepository.findAllById(reservationDto.getApartmentsDtoIds());
+
+        reservation.setClient(client);
+        reservation.setApartments(apartments);
+        reservation.setStartDate(reservationDto.getStartDate());
+        reservation.setEndDate(reservationDto.getEndDate());
+        reservation.setReservationStatus(ReservationStatus.valueOf(reservationDto.getReservationDtoStatus()));
+        reservation.setModifiedDate(reservationDto.getModifiedDate());
+        reservation.setTotalPrice(reservationDto.getTotalPrice());
+        reservation.setNotes(reservationDto.getNotes());
+
+        return reservation;
+    }
+
+    public List<Reservation> reservationDtoToEntity(List<ReservationDto> reservationsDto, ApartmentRepository apartmentRepository, ClientRepository clientRepository) {
+        return reservationsDto.stream()
+                .map(dto -> reservationDtoToEntity(dto, clientRepository, apartmentRepository))
+                .collect(Collectors.toList());
+    }
 
     public static Apartment apartmentDtoToEntity(ApartmentDto dto, ReservationService reservationService) {
         Apartment apartment = new Apartment();
@@ -77,7 +78,9 @@ public class DtoUtils {
         apartment.setPricePerNight(dto.getPricePerNight());
         apartment.setArea(dto.getArea());
         apartment.setCapacity(dto.getCapacity());
-        apartment.setReservation(reservationService.findReservationById(dto.getReservationId()));
+        if (dto.getReservationId() != null) {
+            apartment.setReservation(reservationService.findReservationById(dto.getReservationId()));
+        }
         return apartment;
     }
 
