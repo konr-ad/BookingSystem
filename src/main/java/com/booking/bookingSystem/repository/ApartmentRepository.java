@@ -16,5 +16,5 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
     Optional<Apartment>findById(Long id);
     Optional<List<Apartment>> findByPricePerNightBetween(BigDecimal minPrice, BigDecimal maxPrice);
 
-    List<Apartment> findByContai(String search);
+//    List<Apartment> findByContai(String search);
 }

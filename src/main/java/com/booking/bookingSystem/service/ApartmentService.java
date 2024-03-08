@@ -78,7 +78,7 @@ public class ApartmentService {
         return DtoUtils.apartmentToDto(listOfApartments);
     }
 
-    public List<ApartmentDto> search(String search) {
-        return DtoUtils.apartmentToDto(apartmentRepository.findByAttributeContaining(search));
-    }
+//    public List<ApartmentDto> search(String search) {
+//        return DtoUtils.apartmentToDto(apartmentRepository.findByAttributeContaining(search));
+//    }
 }
