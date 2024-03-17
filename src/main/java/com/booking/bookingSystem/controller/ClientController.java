@@ -59,4 +59,10 @@ public class ClientController {
         clientService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ClientDto>> searchClients(@RequestParam(value = "search", required = false) String search) {
+        List<ClientDto> results = clientService.search(search);
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
 }

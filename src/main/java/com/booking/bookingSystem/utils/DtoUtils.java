@@ -10,10 +10,7 @@ import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.model.Reservation;
 import com.booking.bookingSystem.repository.ApartmentRepository;
 import com.booking.bookingSystem.repository.ClientRepository;
-import com.booking.bookingSystem.service.ApartmentService;
-import com.booking.bookingSystem.service.ClientService;
 import com.booking.bookingSystem.service.ReservationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -122,7 +119,7 @@ public class DtoUtils {
         dto.setPreferredPaymentMethod(client.getPreferredPaymentMethod());
         return dto;
     }
-    public static List<ClientDto> clientDToDto(List<Client> clients) {
+    public static List<ClientDto> clientToDto(List<Client> clients) {
         List<ClientDto> dtos = new ArrayList<>();
         for (Client client : clients) {
             dtos.add(clientToDto(client));

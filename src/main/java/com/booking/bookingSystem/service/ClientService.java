@@ -4,8 +4,10 @@ import com.booking.bookingSystem.dto.ClientDto;
 import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.repository.ClientRepository;
+import com.booking.bookingSystem.repository.specification.ClientSpecification;
 import com.booking.bookingSystem.utils.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -78,6 +80,11 @@ public class ClientService {
 
     public List<ClientDto> findAll() {
         List<Client> clients = clientRepository.findAll();
-        return DtoUtils.clientDToDto(clients);
+        return DtoUtils.clientToDto(clients);
+    }
+
+    public List<ClientDto> search(String search) {
+        Specification<Client> spec = ClientSpecification.hasMatch(search);
+        return DtoUtils.clientToDto(clientRepository.findAll(spec));
     }
 }
