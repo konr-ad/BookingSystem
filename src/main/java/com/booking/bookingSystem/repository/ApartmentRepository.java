@@ -1,8 +1,6 @@
 package com.booking.bookingSystem.repository;
 
-import com.booking.bookingSystem.dto.ApartmentDto;
 import com.booking.bookingSystem.model.Apartment;
-import com.booking.bookingSystem.model.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,8 +11,7 @@ import java.util.Optional;
 @Repository
 public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
 
-    Optional<Apartment>findById(Long id);
-    Optional<List<Apartment>> findByPricePerNightBetween(BigDecimal minPrice, BigDecimal maxPrice);
+    Optional<Apartment> findById(Long id);
 
-    List<Apartment> findByContai(String search);
+    Optional<List<Apartment>> findByPricePerNightBetween(BigDecimal minPrice, BigDecimal maxPrice);
 }

@@ -30,17 +30,6 @@ public class ApartmentController {
         return new ResponseEntity<>(apartmentDto, HttpStatus.OK);
     }
 
-    @GetMapping()
-    public ResponseEntity<List<ApartmentDto>> getAllApartments(@RequestParam(value = "search", required = false) String search) {
-        List<ApartmentDto> listOfApartmentsDto;
-        if (search != null && !search.isEmpty()) {
-            listOfApartmentsDto = apartmentService.search(search);
-        } else {
-            listOfApartmentsDto = apartmentService.findAll();
-        }
-        return new ResponseEntity<>(listOfApartmentsDto, HttpStatus.OK);
-    }
-
     @PostMapping
     public ResponseEntity<?> createApartment(@Valid @RequestBody ApartmentDto apartmentDto, BindingResult result) {
         ResponseEntity<?> errorMap = validationUtils.getResponseEntity(result);
