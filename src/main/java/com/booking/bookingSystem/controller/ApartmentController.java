@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -51,4 +52,17 @@ public class ApartmentController {
         apartmentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ApartmentDto>> searchApartments(
+            @RequestParam(value = "minPrice", required = false) BigDecimal minPrice,
+            @RequestParam(value = "maxPrice", required = false) BigDecimal maxPrice,
+            @RequestParam(value = "minCapacity", required = false) Integer minCapacity,
+            @RequestParam(value = "maxCapacity", required = false) Integer maxCapacity,
+            @RequestParam(value = "area", required = false) String area) {
+
+        List<ApartmentDto> results = apartmentService.search(minPrice, maxPrice, minCapacity, maxCapacity, area);
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
 }

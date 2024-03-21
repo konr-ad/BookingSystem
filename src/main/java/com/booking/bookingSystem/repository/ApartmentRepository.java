@@ -1,7 +1,9 @@
 package com.booking.bookingSystem.repository;
 
 import com.booking.bookingSystem.model.Apartment;
+import com.booking.bookingSystem.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -9,9 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
+public interface ApartmentRepository extends JpaRepository<Apartment, Long>, JpaSpecificationExecutor<Apartment> {
 
     Optional<Apartment> findById(Long id);
 
     Optional<List<Apartment>> findByPricePerNightBetween(BigDecimal minPrice, BigDecimal maxPrice);
+
+
 }

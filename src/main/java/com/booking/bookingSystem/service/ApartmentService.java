@@ -5,13 +5,16 @@ import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Reservation;
 import com.booking.bookingSystem.repository.ApartmentRepository;
+import com.booking.bookingSystem.repository.specification.ApartmentSpecification;
 import com.booking.bookingSystem.utils.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ApartmentService {
@@ -76,5 +79,22 @@ public class ApartmentService {
     public List<ApartmentDto> findAll() {
         List<Apartment> listOfApartments = apartmentRepository.findAll();
         return DtoUtils.apartmentToDto(listOfApartments);
+    }
+
+    public List<ApartmentDto> search(BigDecimal minPrice, BigDecimal maxPrice, Integer minCapacity, Integer maxCapacity, String area) {
+        Specification<Apartment> spec = Specification.where(null);
+
+        if (minPrice != null && maxPrice != null) {
+            spec = spec.and(ApartmentSpecification.priceBetween(minPrice, maxPrice));
+        }
+        if (minCapacity != null && maxCapacity != null) {
+            spec = spec.and(ApartmentSpecification.capacityBetween(minCapacity, maxCapacity));
+        }
+        if (area != null && !area.isEmpty()) {
+            spec = spec.and(ApartmentSpecification.areaLike(area));
+        }
+
+        List<Apartment> apartments = apartmentRepository.findAll(spec);
+        return apartments.stream().map(DtoUtils::apartmentToDto).collect(Collectors.toList());
     }
 }
