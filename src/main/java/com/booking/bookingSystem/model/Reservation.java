@@ -27,7 +27,7 @@ public class Reservation {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "apartment")
+    @OneToMany(mappedBy = "reservation")
     private List<Apartment> apartments;
     @NotNull
     @Column(name = "start_date")
@@ -51,7 +51,4 @@ public class Reservation {
 
     @Column(name = "notes")
     private String notes;
-
-    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private DigitalKey digitalKey;
 }

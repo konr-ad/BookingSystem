@@ -32,4 +32,6 @@ public class Apartment {
     @ManyToOne
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
+    @OneToOne(mappedBy = "apartment", cascade = CascadeType.ALL)
+    private DigitalKey digitalKey;
 }
