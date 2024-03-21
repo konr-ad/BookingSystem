@@ -33,6 +33,6 @@ public class DigitalKey {
 
     @NotNull
     @OneToOne
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
+    @JoinColumn(name = "apartment_id")
+    private Apartment apartment;
 }

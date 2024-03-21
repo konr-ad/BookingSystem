@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -37,5 +38,10 @@ public class DigitalKeyService {
     public DigitalKey findByEncodedText(String encodedText) {
         return digitalKeyRepository.findByEncodedText(encodedText)
                 .orElseThrow(() -> new EntityNotFoundException("QR Code not found"));
+    }
+
+    public boolean isValid(String encodedText) {
+        DigitalKey key = findByEncodedText(encodedText);
+        return LocalDateTime.now().isAfter(key.getValidFrom()) && LocalDateTime.now().isBefore(key.getValidUntil());
     }
 }
