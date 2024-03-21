@@ -2,13 +2,10 @@ package com.booking.bookingSystem.repository.specification;
 
 import com.booking.bookingSystem.model.Client;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
 
-@Component
-public class ClientSearchSpecification implements SearchSpecification<Client>{
+public class ClientSpecification {
 
-    @Override
-    public Specification<Client> hasMatch(String search) {
+    public static Specification<Client> hasMatch(String search) {
         return (root, query, cb) -> {
             if (search == null) {
                 return cb.isTrue(cb.literal(true));
