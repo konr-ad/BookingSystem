@@ -4,7 +4,7 @@ import com.booking.bookingSystem.dto.ClientDto;
 import com.booking.bookingSystem.exception.EntityNotFoundException;
 import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.repository.ClientRepository;
-import com.booking.bookingSystem.repository.specification.ClientSpecification;
+import com.booking.bookingSystem.repository.specification.ClientSearchSpecification;
 import com.booking.bookingSystem.utils.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,10 +17,12 @@ import java.util.Optional;
 public class ClientService {
 
     private final ClientRepository clientRepository;
+    private final ClientSearchSpecification clientSearchSpecification;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository) {
+    public ClientService(ClientRepository clientRepository, ClientSearchSpecification clientSearchSpecification) {
         this.clientRepository = clientRepository;
+        this.clientSearchSpecification = clientSearchSpecification;
     }
 
     public Client findClientById(Long id) {
@@ -65,6 +67,7 @@ public class ClientService {
         Client savedClient = clientRepository.save(client);
         return DtoUtils.clientToDto(savedClient);
     }
+
     private void updateClientFields(Client client, ClientDto dto) {
         client.setFirstName(dto.getFirstName());
         client.setLastName(dto.getLastName());
@@ -84,7 +87,7 @@ public class ClientService {
     }
 
     public List<ClientDto> search(String search) {
-        Specification<Client> spec = ClientSpecification.hasMatch(search);
+        Specification<Client> spec = clientSearchSpecification.hasMatch(search);
         return DtoUtils.clientToDto(clientRepository.findAll(spec));
     }
 }
