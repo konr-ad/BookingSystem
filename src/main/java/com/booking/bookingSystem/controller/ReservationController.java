@@ -1,6 +1,7 @@
 package com.booking.bookingSystem.controller;
 
 import com.booking.bookingSystem.dto.ReservationDto;
+import com.booking.bookingSystem.enums.ReservationStatus;
 import com.booking.bookingSystem.service.ReservationService;
 import com.booking.bookingSystem.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -51,4 +53,14 @@ public class ReservationController {
         reservationService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ReservationDto>> searchReservations(
+            @RequestParam(value = "lastName", required = false) String lastName,
+            @RequestParam(value = "phoneNumber", required = false) String phoneNumber,
+            @RequestParam(value = "status", required = false) ReservationStatus status) {
+        List<ReservationDto> results = reservationService.search(lastName, phoneNumber, status);
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
 }

@@ -3,19 +3,21 @@ package com.booking.bookingSystem.service;
 import com.booking.bookingSystem.dto.ReservationDto;
 import com.booking.bookingSystem.enums.ReservationStatus;
 import com.booking.bookingSystem.exception.EntityNotFoundException;
-import com.booking.bookingSystem.model.Apartment;
 import com.booking.bookingSystem.model.Client;
 import com.booking.bookingSystem.model.Reservation;
 import com.booking.bookingSystem.qrCode.QrCodeGenerator;
 import com.booking.bookingSystem.repository.ApartmentRepository;
 import com.booking.bookingSystem.repository.DigitalKeyRepository;
 import com.booking.bookingSystem.repository.ReservationRepository;
+import com.booking.bookingSystem.repository.specification.ReservationSpecification;
 import com.booking.bookingSystem.utils.DtoUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -71,5 +73,14 @@ public class ReservationService {
         Reservation existingReservation = findReservationById(dto.getId());
         Reservation updatedReservation = rentalManagementService.updateReservationFields(existingReservation, dto);
         return DtoUtils.reservationToDto(updatedReservation);
+    }
+
+    public List<ReservationDto> search(String lastName, String phoneNumber, ReservationStatus status) {
+        Specification<Reservation> spec = Specification.where(ReservationSpecification.hasClientLastName(lastName))
+                .and(ReservationSpecification.hasClientPhoneNumber(phoneNumber))
+                .and(ReservationSpecification.hasReservationStatus(status));
+
+        List<Reservation> results = reservationRepository.findAll(spec);
+        return results.stream().map(DtoUtils::reservationToDto).collect(Collectors.toList());
     }
 }

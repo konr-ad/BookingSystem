@@ -27,7 +27,7 @@ public class Reservation {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "reservation")
+    @OneToMany(mappedBy = "apartment")
     private List<Apartment> apartments;
     @NotNull
     @Column(name = "start_date")
