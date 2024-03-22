@@ -1,5 +1,6 @@
 package com.booking.bookingSystem.service;
 
+import com.booking.bookingSystem.dto.ClientDto;
 import com.booking.bookingSystem.dto.ReservationDto;
 import com.booking.bookingSystem.enums.ReservationStatus;
 import com.booking.bookingSystem.exception.EntityNotFoundException;
@@ -82,5 +83,10 @@ public class ReservationService {
 
         List<Reservation> results = reservationRepository.findAll(spec);
         return results.stream().map(DtoUtils::reservationToDto).collect(Collectors.toList());
+    }
+
+    public List<ReservationDto> findAll() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        return DtoUtils.reservationToDto(reservations);
     }
 }

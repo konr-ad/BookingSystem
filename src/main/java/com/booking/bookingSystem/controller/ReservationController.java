@@ -1,5 +1,6 @@
 package com.booking.bookingSystem.controller;
 
+import com.booking.bookingSystem.dto.ClientDto;
 import com.booking.bookingSystem.dto.ReservationDto;
 import com.booking.bookingSystem.enums.ReservationStatus;
 import com.booking.bookingSystem.service.ReservationService;
@@ -63,4 +64,9 @@ public class ReservationController {
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
+    @GetMapping()
+    public ResponseEntity<List<ReservationDto>> getAllReservations() {
+        List<ReservationDto> listOfReservationsDto = reservationService.findAll();
+        return new ResponseEntity<>(listOfReservationsDto, HttpStatus.OK);
+    }
 }

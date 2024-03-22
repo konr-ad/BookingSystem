@@ -1,6 +1,7 @@
 package com.booking.bookingSystem.controller;
 
 import com.booking.bookingSystem.dto.ApartmentDto;
+import com.booking.bookingSystem.dto.ReservationDto;
 import com.booking.bookingSystem.service.ApartmentService;
 import com.booking.bookingSystem.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/apartments")
+@RequestMapping("/api/apartments")
 public class ApartmentController {
     private final ValidationUtils validationUtils;
     private final ApartmentService apartmentService;
@@ -63,6 +64,12 @@ public class ApartmentController {
 
         List<ApartmentDto> results = apartmentService.search(minPrice, maxPrice, minCapacity, maxCapacity, area);
         return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<ApartmentDto>> getAllApartments() {
+        List<ApartmentDto> listOfApartmentsDto = apartmentService.findAll();
+        return new ResponseEntity<>(listOfApartmentsDto, HttpStatus.OK);
     }
 
 }
